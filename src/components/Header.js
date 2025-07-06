@@ -2,10 +2,8 @@ import headerImg from "../images/header.png";
 import {
   Box,
   Heading,
-  Button,
   Image,
   Flex,
-  Stack,
   useBreakpointValue,
   HStack,
   Link as ChakraLink,
@@ -35,64 +33,11 @@ export default function Header() {
     }).format(value);
 
   return (
-    <Box bg="saffron.500" px={4} py={2}>
-      {/* Top Row: Home + Total + Admin */}
-      <Flex
-        justify="space-between"
-        align="center"
-        wrap="wrap"
-        direction={{ base: "column", md: "row" }}
-        gap={2}
-      >
-        <Stack direction="row" spacing={2} align="center">
-          <Button
-            size="sm"
-            variant="outline"
-            borderColor="white"
-            color="white"
-            _hover={{ bg: "white", color: "saffron.500" }}
-            onClick={() => navigate("/")}
-          >
-            Home
-          </Button>
-          <Box
-            px={3}
-            py={0.5}
-            bg="white"
-            color="green.700"
-            fontWeight="bold"
-            borderRadius="md"
-            fontSize={amountFontSize}
-            boxShadow="sm"
-          >
-            Total:{" "}
-            <CountUp
-              end={total}
-              duration={5}
-              separator=","
-              decimals={0}
-              formattingFn={formatINR}
-            />
-          </Box>
-        </Stack>
-
-        <Button
-          size="sm"
-          variant="outline"
-          borderColor="white"
-          color="white"
-          _hover={{ bg: "white", color: "saffron.500" }}
-          onClick={() => navigate("/admin/login")}
-        >
-          Admin Login
-        </Button>
-      </Flex>
-
+    <Box bg="saffron.500" px={4} py={2} position="relative">
       {/* Title Section */}
       <Flex
         align="center"
         justify="center"
-        mt={2}
         direction={{ base: "column", md: "row" }}
         textAlign="center"
       >
@@ -118,7 +63,7 @@ export default function Header() {
         </Heading>
       </Flex>
 
-      {/* Menu Section */}
+      {/* Navigation Menu */}
       <HStack
         mt={3}
         spacing={4}
@@ -127,10 +72,18 @@ export default function Header() {
         width="100%"
       >
         <ChakraLink
+          onClick={() => navigate("/")}
+          color="white"
+          fontWeight="bold"
+          _hover={{ color: "yellow.300", textDecoration: "none" }}
+        >
+          Home
+        </ChakraLink>
+        <ChakraLink
           onClick={() => navigate("/about")}
           color="white"
           fontWeight="bold"
-          _hover={{ textDecoration: "underline" }}
+          _hover={{ color: "yellow.300", textDecoration: "none" }}
         >
           About
         </ChakraLink>
@@ -138,7 +91,7 @@ export default function Header() {
           onClick={() => navigate("/deeds")}
           color="white"
           fontWeight="bold"
-          _hover={{ textDecoration: "underline" }}
+          _hover={{ color: "yellow.300", textDecoration: "none" }}
         >
           Deeds
         </ChakraLink>
@@ -146,11 +99,51 @@ export default function Header() {
           onClick={() => navigate("/contact")}
           color="white"
           fontWeight="bold"
-          _hover={{ textDecoration: "underline" }}
+          _hover={{ color: "yellow.300", textDecoration: "none" }}
         >
           Contact
         </ChakraLink>
+        <ChakraLink
+          onClick={() => navigate("/admin/login")}
+          color="white"
+          fontWeight="bold"
+          px={3}
+          py={1}
+          borderRadius="md"
+          _hover={{
+            bg: "white",
+            color: "saffron.500",
+            textDecoration: "none",
+            boxShadow: "md",
+          }}
+        >
+          Admin Login
+        </ChakraLink>
       </HStack>
+
+      {/* Total INR - Bottom Right */}
+      <Box
+        position="absolute"
+        bottom={2}
+        right={4}
+        bg="white"
+        color="green.700"
+        px={3}
+        py={1}
+        borderRadius="md"
+        fontWeight="bold"
+        fontSize={amountFontSize}
+        boxShadow="sm"
+      >
+        Total:{" "}
+        <CountUp
+          end={total}
+          duration={5}
+          separator=","
+          decimals={0}
+          formattingFn={formatINR}
+        />
+      </Box>
     </Box>
   );
 }
