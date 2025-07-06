@@ -1,4 +1,4 @@
-import { Box, Heading, Text, VStack, Link, Divider } from "@chakra-ui/react";
+import { Box, Heading, Text, VStack, Divider } from "@chakra-ui/react";
 
 export default function Contact() {
   return (
