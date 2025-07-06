@@ -12,6 +12,9 @@ import PhotoCarousel from "./components/PhotoCarousel";
 import Donations from "./components/Donations";
 import AdminLogin from "./pages/AdminLogin";
 import AdminUpload from "./pages/AdminUpload";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Deeds from "./pages/Deeds";
 
 function App() {
   return (
@@ -38,9 +41,12 @@ function App() {
               />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/upload" element={<AdminUpload />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/deeds" element={<Deeds />} />
+              <Route path="/contact" element={<Contact />} />
             </Routes>
           </Container>
-          <Footer /> 
+          <Footer />
         </BrowserRouter>
       </Box>
     </ChakraProvider>

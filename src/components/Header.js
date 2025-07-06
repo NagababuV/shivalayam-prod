@@ -7,6 +7,8 @@ import {
   Flex,
   Stack,
   useBreakpointValue,
+  HStack,
+  Link as ChakraLink,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -34,7 +36,7 @@ export default function Header() {
 
   return (
     <Box bg="saffron.500" px={4} py={2}>
-      {/* Top Row: Buttons + Total */}
+      {/* Top Row: Home + Total + Admin */}
       <Flex
         justify="space-between"
         align="center"
@@ -115,6 +117,40 @@ export default function Header() {
           </Box>
         </Heading>
       </Flex>
+
+      {/* Menu Section */}
+      <HStack
+        mt={3}
+        spacing={4}
+        justify="center"
+        flexWrap="wrap"
+        width="100%"
+      >
+        <ChakraLink
+          onClick={() => navigate("/about")}
+          color="white"
+          fontWeight="bold"
+          _hover={{ textDecoration: "underline" }}
+        >
+          About
+        </ChakraLink>
+        <ChakraLink
+          onClick={() => navigate("/deeds")}
+          color="white"
+          fontWeight="bold"
+          _hover={{ textDecoration: "underline" }}
+        >
+          Deeds
+        </ChakraLink>
+        <ChakraLink
+          onClick={() => navigate("/contact")}
+          color="white"
+          fontWeight="bold"
+          _hover={{ textDecoration: "underline" }}
+        >
+          Contact
+        </ChakraLink>
+      </HStack>
     </Box>
   );
 }
