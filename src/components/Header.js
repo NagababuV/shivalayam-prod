@@ -4,36 +4,16 @@ import {
   Heading,
   Image,
   Flex,
-  useBreakpointValue,
   HStack,
   Link as ChakraLink,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { fetchTotal } from "../api/api";
-import CountUp from "react-countup";
 
 export default function Header() {
   const navigate = useNavigate();
-  const [total, setTotal] = useState(0);
-
-  useEffect(() => {
-    fetchTotal()
-      .then((res) => setTotal(res.data))
-      .catch(console.error);
-  }, []);
-
-  const amountFontSize = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
-
-  const formatINR = (value) =>
-    new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(value);
 
   return (
-    <Box bg="saffron.500" px={4} py={2} position="relative">
+    <Box bg="saffron.500" px={4} py={2}>
       {/* Title Section */}
       <Flex
         align="center"
@@ -120,30 +100,6 @@ export default function Header() {
           Admin Login
         </ChakraLink>
       </HStack>
-
-      {/* Total INR - Bottom Right */}
-      <Box
-        position="absolute"
-        bottom={2}
-        right={4}
-        bg="white"
-        color="green.700"
-        px={3}
-        py={1}
-        borderRadius="md"
-        fontWeight="bold"
-        fontSize={amountFontSize}
-        boxShadow="sm"
-      >
-        Total:{" "}
-        <CountUp
-          end={total}
-          duration={5}
-          separator=","
-          decimals={0}
-          formattingFn={formatINR}
-        />
-      </Box>
     </Box>
   );
 }
