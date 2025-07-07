@@ -1,3 +1,4 @@
+// src/api/api.js
 import axios from "axios";
 
 const API_BASE = "http://localhost:8080";
@@ -18,17 +19,11 @@ export const requestOtp = (mobile) =>
 export const verifyOtp = (mobile, otp) =>
   axios.post(`${API_BASE}/auth/verify-otp`, { mobile, otp });
 
-// 🔒 Admin-only APIs (require JWT token)
-export const uploadDonation = (donorName, amount, token) =>
-  axios.post(
-    `${API_BASE}/api/admin/donations`,
-    { donorName, amount },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+// 🔒 Admin APIs (requires Bearer Token)
+export const uploadDonation = (donation, token) =>
+  axios.post(`${API_BASE}/api/admin/donations`, donation, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
 export const uploadPhoto = (file, token) => {
   const formData = new FormData();
@@ -41,3 +36,18 @@ export const uploadPhoto = (file, token) => {
     },
   });
 };
+
+export const searchDonorsByFirstName = (firstName, token) =>
+  axios.get(`${API_BASE}/api/admin/donations/search?firstName=${firstName}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const updateDonation = (id, updatedDonation, token) =>
+  axios.put(`${API_BASE}/api/admin/donations/${id}`, updatedDonation, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const deleteDonation = (id, token) =>
+  axios.delete(`${API_BASE}/api/admin/donations/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });

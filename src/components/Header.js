@@ -35,7 +35,7 @@ export default function Header() {
           letterSpacing="widest"
           lineHeight="1.2"
         >
-          శ్రీ అన్నపూర్ణ సమేత విశ్వేశ్వర స్వామి ఆలయం తోకడ
+          శ్రీ అన్నపూర్ణ సమేత విశ్వేశ్వర స్వామి ఆలయం తోకాడ
           <br />
           <Box as="span" fontSize="xl">
             SRI ANNAPURNA SAMETHA VISWESWARA SWAMY ALAYAM THOKADA
@@ -83,6 +83,15 @@ export default function Header() {
         >
           Contact
         </ChakraLink>
+        <ChakraLink
+  onClick={() => navigate("/donate")}
+  color="white"
+  fontWeight="bold"
+  _hover={{ color: "yellow.300", textDecoration: "none" }}
+>
+  Donate
+</ChakraLink>
+
         <ChakraLink
           onClick={() => navigate("/admin/login")}
           color="white"

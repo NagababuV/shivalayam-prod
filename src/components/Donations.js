@@ -1,3 +1,4 @@
+// src/pages/Donations.js
 import {
   Table,
   Thead,
@@ -12,9 +13,10 @@ import {
   Grid,
   Input,
   useBreakpointValue,
+  VStack,
 } from "@chakra-ui/react";
-import { fetchDonations, fetchTotal } from "../api/api";
 import { useEffect, useState } from "react";
+import { fetchDonations, fetchTotal } from "../api/api";
 import TopDonations from "../components/TopDonations";
 
 export default function Donations() {
@@ -38,14 +40,17 @@ export default function Donations() {
   }, []);
 
   useEffect(() => {
-    if (search.trim() === "") {
+    const query = search.toLowerCase();
+    if (query === "") {
       setFilteredDonors(donors);
     } else {
-      const query = search.toLowerCase();
-      const filtered = donors.filter((d) =>
-        d.donorName.toLowerCase().includes(query)
+      setFilteredDonors(
+        donors.filter((d) =>
+          `${d.donorFirstName || ""} ${d.donorLastName || ""}`
+            .toLowerCase()
+            .includes(query)
+        )
       );
-      setFilteredDonors(filtered);
     }
   }, [search, donors]);
 
@@ -57,29 +62,29 @@ export default function Donations() {
       gap={6}
       px={{ base: 2, md: 4 }}
       py={4}
+      alignItems="start"
     >
-      {/* Left: Donation List with Search */}
+      {/* Left: Donation Table */}
       <Box>
         <Text fontSize="xl" fontWeight="bold" mb={2}>
           Donations
         </Text>
 
-        <Input
-          placeholder="Search by donor name..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          mb={4}
-          bg="white"
-          fontSize={fontSize}
-        />
+        <Box border="1px solid #eee" borderRadius="md" bg="white">
+          <VStack spacing={2} p={3} align="stretch">
+            <Input
+              placeholder="Search by donor name..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              bg="gray.50"
+              fontSize={fontSize}
+            />
+          </VStack>
 
-        {!filteredDonors.length ? (
-          <Text>No matching donations found.</Text>
-        ) : (
           <TableContainer
-            maxH="300px"
+            maxH="220px" // roughly 4 rows based on your font & padding
             overflowY="auto"
-            border="1px solid #eee"
+            borderTop="1px solid #eee"
             borderRadius="md"
             sx={{
               "::-webkit-scrollbar": { width: "4px" },
@@ -101,18 +106,26 @@ export default function Donations() {
                 </Tr>
               </Thead>
               <Tbody>
-                {filteredDonors.map((d) => (
-                  <Tr key={d.id}>
-                    <Td fontSize={fontSize}>{d.donorName}</Td>
-                    <Td isNumeric fontSize={fontSize}>
-                      {d.amount.toLocaleString("en-IN")}
-                    </Td>
+                {filteredDonors.length === 0 ? (
+                  <Tr>
+                    <Td colSpan={2}>No matching donations found.</Td>
                   </Tr>
-                ))}
+                ) : (
+                  filteredDonors.map((d) => (
+                    <Tr key={d.id}>
+                      <Td fontSize={fontSize}>
+                        {`${d.donorFirstName || ""} ${d.donorLastName || ""}`}
+                      </Td>
+                      <Td isNumeric fontSize={fontSize}>
+                        {d.amount?.toLocaleString("en-IN")}
+                      </Td>
+                    </Tr>
+                  ))
+                )}
               </Tbody>
             </Table>
           </TableContainer>
-        )}
+        </Box>
 
         <Text fontSize="md" fontWeight="bold" mt={4}>
           Total Collected: ₹ {total.toLocaleString("en-IN")}
@@ -120,9 +133,7 @@ export default function Donations() {
       </Box>
 
       {/* Right: Top Donors */}
-      <Box>
-        <TopDonations />
-      </Box>
+      <TopDonations />
     </Grid>
   );
 }

@@ -15,6 +15,7 @@ import AdminUpload from "./pages/AdminUpload";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Deeds from "./pages/Deeds";
+import Donate from "./pages/Donate"; // ✅ Correct import
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/deeds" element={<Deeds />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/donate" element={<Donate />} /> {/* ✅ Fixed here */}
             </Routes>
           </Container>
           <Footer />
