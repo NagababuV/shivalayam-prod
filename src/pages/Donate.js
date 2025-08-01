@@ -6,11 +6,21 @@ import {
   VStack,
   Image,
   SimpleGrid,
+  HStack,
+  IconButton,
+  Tooltip,
 } from "@chakra-ui/react";
+import { FaGooglePay } from "react-icons/fa"; // GPay icon approx
+import { SiPhonepe, SiPaytm } from "react-icons/si"; // PhonePe & Paytm icons
 import phonepeQR from "../images/p.jpeg";
 import unionQR from "../images/unionbank-qr.png";
 
 export default function Donate() {
+  // Replace UPI IDs with your actual merchant/payment UPI IDs
+  const phonePeLink = "upi://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&cu=INR";
+  const gpayLink = "upi://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&cu=INR";
+  const paytmLink = "upi://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&cu=INR";
+
   return (
     <Box>
       <Heading textAlign="center" fontSize="2xl" color="orange.500" mb={2}>
@@ -44,9 +54,52 @@ export default function Donate() {
           <Text fontSize="sm" color="gray.600">
             UPI ID: <strong>Q684141060@ybl</strong>
           </Text>
-          <Text fontSize="sm" color="gray.500">
-            Works with Paytm, GPay, PhonePe and all UPI apps
-          </Text>
+
+          {/* Payment App Icons */}
+          <HStack spacing={4} mt={2}>
+            <Tooltip label="Pay with PhonePe">
+              <IconButton
+                as="a"
+                href={phonePeLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                icon={<SiPhonepe size={28} />}
+                aria-label="PhonePe"
+                color="white"
+                bg="#5f259f"
+                _hover={{ bg: "#6c33b4" }}
+                borderRadius="full"
+              />
+            </Tooltip>
+            <Tooltip label="Pay with Google Pay">
+              <IconButton
+                as="a"
+                href={gpayLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                icon={<FaGooglePay size={28} />}
+                aria-label="GPay"
+                color="white"
+                bg="#4285F4"
+                _hover={{ bg: "#3367D6" }}
+                borderRadius="full"
+              />
+            </Tooltip>
+            <Tooltip label="Pay with Paytm">
+              <IconButton
+                as="a"
+                href={paytmLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                icon={<SiPaytm size={28} />}
+                aria-label="Paytm"
+                color="white"
+                bg="#00baf2"
+                _hover={{ bg: "#009ec1" }}
+                borderRadius="full"
+              />
+            </Tooltip>
+          </HStack>
         </VStack>
 
         {/* Union Bank */}
