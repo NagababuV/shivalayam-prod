@@ -1,4 +1,4 @@
-import headerImg from "../images/header.png";
+// src/components/Header.js
 import {
   Box,
   Heading,
@@ -6,109 +6,135 @@ import {
   Flex,
   HStack,
   Link as ChakraLink,
+  IconButton,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  DrawerHeader,
+  DrawerBody,
+  VStack,
+  useDisclosure,
 } from "@chakra-ui/react";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
+import headerImg from "../images/header.png";
 
 export default function Header() {
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const menuItems = [
+    { label: "Home", path: "/" },
+    { label: "About", path: "/about" },
+    { label: "Deeds", path: "/deeds" },
+    { label: "Contact", path: "/contact" },
+    { label: "Admin Login", path: "/admin/login" },
+  ];
 
   return (
-    <Box bg="saffron.500" px={4} py={2}>
-      {/* Title Section */}
+    <Box bg="saffron.500" px={4} py={3} boxShadow="md">
+      {/* Top Row with Logo + Title + Hamburger */}
       <Flex
         align="center"
-        justify="center"
-        direction={{ base: "column", md: "row" }}
+        justify="space-between"
+        direction="row"
+        wrap="wrap"
         textAlign="center"
       >
-        <Image
-          src={headerImg}
-          alt="Temple Header"
-          height="60px"
-          objectFit="contain"
-          mr={{ md: 4 }}
-          mb={{ base: 2, md: 0 }}
-        />
-        <Heading
-          color="white"
-          fontSize="3xl"
-          letterSpacing="widest"
-          lineHeight="1.2"
+        {/* Logo + Title Block */}
+        <Flex
+          align="center"
+          gap={4}
+          justify="center"
+          flex="1"
+          direction={{ base: "column", md: "row" }}
         >
-          శ్రీ అన్నపూర్ణ సమేత విశ్వేశ్వర స్వామి ఆలయం తోకాడ
-          <br />
-          <Box as="span" fontSize="xl">
-            SRI ANNAPURNA SAMETHA VISWESWARA SWAMY ALAYAM THOKADA
-          </Box>
-        </Heading>
+          <Image
+            src={headerImg}
+            alt="Temple Logo"
+            height={{ base: "70px", md: "80px" }}
+            objectFit="contain"
+          />
+          <Heading
+            color="white"
+            fontSize={{ base: "lg", md: "2xl" }}
+            letterSpacing="widest"
+            lineHeight="1.4"
+            textAlign={{ base: "center", md: "left" }}
+          >
+            శ్రీ అన్నపూర్ణ సమేత విశ్వేశ్వర స్వామి ఆలయం తోకాడ
+            <br />
+            <Box
+              as="span"
+              fontSize={{ base: "sm", md: "md" }}
+              display="block"
+              mt={1}
+            >
+              SRI ANNAPURNA SAMETHA VISWESWARA SWAMY ALAYAM THOKADA
+            </Box>
+          </Heading>
+        </Flex>
+
+        {/* Desktop Menu */}
+        <HStack
+          spacing={6}
+          display={{ base: "none", md: "flex" }}
+          fontWeight="bold"
+          ml={8}
+        >
+          {menuItems.map((item) => (
+            <ChakraLink
+              key={item.label}
+              onClick={() => navigate(item.path)}
+              color="white"
+              _hover={{ color: "yellow.300", textDecoration: "none" }}
+            >
+              {item.label}
+            </ChakraLink>
+          ))}
+        </HStack>
+
+        {/* Mobile Hamburger */}
+        <IconButton
+          aria-label="Menu"
+          icon={<HamburgerIcon />}
+          display={{ base: "flex", md: "none" }}
+          onClick={onOpen}
+          color="white"
+          variant="ghost"
+          fontSize="2xl"
+        />
       </Flex>
 
-      {/* Navigation Menu */}
-      <HStack
-        mt={3}
-        spacing={4}
-        justify="center"
-        flexWrap="wrap"
-        width="100%"
-      >
-        <ChakraLink
-          onClick={() => navigate("/")}
-          color="white"
-          fontWeight="bold"
-          _hover={{ color: "yellow.300", textDecoration: "none" }}
-        >
-          Home
-        </ChakraLink>
-        <ChakraLink
-          onClick={() => navigate("/about")}
-          color="white"
-          fontWeight="bold"
-          _hover={{ color: "yellow.300", textDecoration: "none" }}
-        >
-          About
-        </ChakraLink>
-        <ChakraLink
-          onClick={() => navigate("/deeds")}
-          color="white"
-          fontWeight="bold"
-          _hover={{ color: "yellow.300", textDecoration: "none" }}
-        >
-          Deeds
-        </ChakraLink>
-        <ChakraLink
-          onClick={() => navigate("/contact")}
-          color="white"
-          fontWeight="bold"
-          _hover={{ color: "yellow.300", textDecoration: "none" }}
-        >
-          Contact
-        </ChakraLink>
-        <ChakraLink
-  onClick={() => navigate("/donate")}
-  color="white"
-  fontWeight="bold"
-  _hover={{ color: "yellow.300", textDecoration: "none" }}
->
-  Donate
-</ChakraLink>
-
-        <ChakraLink
-          onClick={() => navigate("/admin/login")}
-          color="white"
-          fontWeight="bold"
-          px={3}
-          py={1}
-          borderRadius="md"
-          _hover={{
-            bg: "white",
-            color: "saffron.500",
-            textDecoration: "none",
-            boxShadow: "md",
-          }}
-        >
-          Admin Login
-        </ChakraLink>
-      </HStack>
+      {/* Mobile Drawer */}
+      <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader fontWeight="bold" borderBottomWidth="1px">
+            Menu
+          </DrawerHeader>
+          <DrawerBody>
+            <VStack align="start" spacing={4}>
+              {menuItems.map((item) => (
+                <ChakraLink
+                  key={item.label}
+                  onClick={() => {
+                    navigate(item.path);
+                    onClose();
+                  }}
+                  fontWeight="bold"
+                  color="saffron.500"
+                  _hover={{ color: "orange.600", textDecoration: "none" }}
+                >
+                  {item.label}
+                </ChakraLink>
+              ))}
+            </VStack>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Box>
   );
 }

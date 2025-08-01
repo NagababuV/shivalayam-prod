@@ -49,9 +49,9 @@ export default function Footer() {
         <Text>
           తోకాడ గ్రామం, రాజమహేంద్రవరం, తూర్పు గోదావరి జిల్లా, ఆంధ్రప్రదేశ్ – 533296
         </Text>
-        <Text>📞 సంప్రదించండి: +91 82705 926XX</Text>
+        <Text>📞 సంప్రదించండి: +91 9493575676</Text>
         <Text fontSize="sm" mt={2} opacity={0.8}>
-          Developed by NV Tech
+          Developed by NV Tech & Arrays Global Services India
         </Text>
       </VStack>
     </Box>

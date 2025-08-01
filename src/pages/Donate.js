@@ -5,9 +5,10 @@ import {
   Text,
   VStack,
   Image,
-  Center,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import phonepeQR from "../images/p.jpeg";
+import unionQR from "../images/unionbank-qr.png";
 
 export default function Donate() {
   return (
@@ -16,18 +17,19 @@ export default function Donate() {
         Support the Divine Construction
       </Heading>
       <Text textAlign="center" mb={6} fontSize="md" px={4}>
-        Your generous contribution helps us build the sacred Sri Annapurna Sametha Visweswara Swamy Alayam at Thokada, Rajahmundry.
+        Your generous contribution helps us build the sacred Sri Annapurna Sametha
+        Visweswara Swamy Alayam at Thokada, Rajahmundry.
       </Text>
 
-      {/* PhonePe QR Centered */}
-      <Center mb={10}>
+      {/* QR Codes */}
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} mb={10} px={4}>
+        {/* PhonePe */}
         <VStack
           spacing={3}
           p={4}
           border="1px solid #ddd"
           borderRadius="md"
           bg="white"
-          width={{ base: "100%", sm: "320px" }}
         >
           <Text fontWeight="bold" fontSize="lg">
             Scan & Pay via PhonePe
@@ -39,14 +41,37 @@ export default function Donate() {
             maxH="320px"
             objectFit="contain"
           />
-          <Text fontSize="sm" color="gray.600" mt={1}>
+          <Text fontSize="sm" color="gray.600">
             UPI ID: <strong>Q684141060@ybl</strong>
           </Text>
           <Text fontSize="sm" color="gray.500">
-            Works with Paytm, GPay, PhonePe and other UPI apps
+            Works with Paytm, GPay, PhonePe and all UPI apps
           </Text>
         </VStack>
-      </Center>
+
+        {/* Union Bank */}
+        <VStack
+          spacing={3}
+          p={4}
+          border="1px solid #ddd"
+          borderRadius="md"
+          bg="white"
+        >
+          <Text fontWeight="bold" fontSize="lg">
+            Union Bank UPI
+          </Text>
+          <Image
+            src={unionQR}
+            alt="Union Bank QR"
+            borderRadius="md"
+            maxH="320px"
+            objectFit="contain"
+          />
+          <Text fontSize="sm" color="gray.600">
+            UPI ID: <strong>QR919493575676-0106@unionbankofindia</strong>
+          </Text>
+        </VStack>
+      </SimpleGrid>
 
       {/* Bank Transfer Info */}
       <Box
@@ -72,6 +97,9 @@ export default function Donate() {
         </Text>
         <Text>
           <strong>IFSC Code:</strong> UBIN0802816
+        </Text>
+        <Text>
+          <strong>Branch:</strong> Thokada
         </Text>
       </Box>
     </Box>

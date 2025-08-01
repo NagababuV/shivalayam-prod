@@ -1,7 +1,9 @@
-import { Box, Image, Spinner, Text } from "@chakra-ui/react";
+// src/components/PhotoCarousel.js
+import { Box, Image, Spinner, Text, VStack, Button } from "@chakra-ui/react";
 import Slider from "react-slick";
 import { fetchPhotos } from "../api/api";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -15,6 +17,7 @@ import image5 from "../images/image5.jpeg";
 export default function PhotoCarousel() {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const localImages = [
@@ -32,7 +35,7 @@ export default function PhotoCarousel() {
       })
       .catch((err) => {
         console.error(err);
-        setPhotos(localImages); // Fallback to local images only
+        setPhotos(localImages); // fallback
       })
       .finally(() => setLoading(false));
   }, []);
@@ -50,25 +53,49 @@ export default function PhotoCarousel() {
   };
 
   return (
-    <Slider {...settings}>
-      {photos.map((p) => (
-        <Box
-          key={p.id}
-          p={4}
-          bg="gray.50"
-          border="4px solid"
-          borderColor="gold"
-          rounded="md"
+    <Box>
+      {/* 🖼️ Slider */}
+      <Slider {...settings}>
+        {photos.map((p) => (
+          <Box
+            key={p.id}
+            p={4}
+            bg="gray.50"
+            border="4px solid"
+            borderColor="gold"
+            rounded="md"
+          >
+            <Image
+              src={p.url}
+              alt={p.filename}
+              mx="auto"
+              maxH="400px"
+              objectFit="contain"
+            />
+          </Box>
+        ))}
+      </Slider>
+
+      {/* ✨ Telugu Intro Below Slider */}
+      <VStack spacing={3} mt={6} textAlign="center">
+        <Text fontSize="lg" fontWeight="semibold" color="orange.600">
+          రాజమహేంద్రవరం సమీపంలోని తోకాడ గ్రామంలో నిర్మాణంలో ఉన్న పవిత్రమైన దేవాలయం.
+        </Text>
+        <Text fontSize="lg" color="gray.700">
+          భవిష్యత్ తరాల కోసం ఈ ఆధ్యాత్మిక ఆలయ నిర్మాణంలో మీరు కూడా భాగస్వాములు కావాలి.
+        </Text>
+
+        {/* 🙏 Donate Now Button */}
+        <Button
+          size="lg"
+          colorScheme="orange"
+          bg="saffron.500"
+          _hover={{ bg: "orange.600" }}
+          onClick={() => navigate("/donate")}
         >
-          <Image
-            src={p.url}
-            alt={p.filename}
-            mx="auto"
-            maxH="400px"
-            objectFit="contain"
-          />
-        </Box>
-      ))}
-    </Slider>
+          🙏 Donate Now
+        </Button>
+      </VStack>
+    </Box>
   );
 }

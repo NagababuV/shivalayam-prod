@@ -16,6 +16,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Deeds from "./pages/Deeds";
 import Donate from "./pages/Donate"; // ✅ Correct import
+import WhatsAppFloating from "./components/WhatsAppFloating"; // ✅ Import WhatsAppFloating
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
             </Routes>
           </Container>
           <Footer />
+           <WhatsAppFloating /> 
         </BrowserRouter>
       </Box>
     </ChakraProvider>

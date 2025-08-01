@@ -10,12 +10,11 @@ export default function Contact() {
           <strong>Temple Address:</strong><br />
           Sri Annapurna Sametha Visweswara Swamy Alayam,<br />
           D.No: 1-122/1, Thokada, Rajanagaram Mandalam,<br />
-          East Godavari District, Andhra Pradesh - 533294
+          East Godavari District, Andhra Pradesh - 533296
         </Text>
 
-        <Text><strong>Chairman:</strong> Shri Vegisetti Chakrarao — 📞 +91-XXXXXXXXXX</Text>
-        <Text><strong>Secretary:</strong> Shri B V V S Murthy — 📞 +91-XXXXXXXXXX</Text>
-        <Text><strong>Email:</strong> templethokada@gmail.com</Text>
+        <Text><strong>Chairman:</strong> Shri Vegisetti Chakrarao — 📞 +91-9493575676</Text>
+        <Text><strong>Email:</strong> sasvsathokada@gmail.com</Text>
 
         <Divider />
 
