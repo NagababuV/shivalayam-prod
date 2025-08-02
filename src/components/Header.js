@@ -28,6 +28,7 @@ export default function Header() {
     { label: "Home", path: "/" },
     { label: "About", path: "/about" },
     { label: "Deeds", path: "/deeds" },
+    { label: "Expenditures", path: "/expenditures" }, // ✅ New Transparency Page
     { label: "Contact", path: "/contact" },
     { label: "Admin Login", path: "/admin/login" },
   ];

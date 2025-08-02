@@ -17,6 +17,7 @@ import Contact from "./pages/Contact";
 import Deeds from "./pages/Deeds";
 import Donate from "./pages/Donate"; // ✅ Correct import
 import WhatsAppFloating from "./components/WhatsAppFloating"; // ✅ Import WhatsAppFloating
+import Expenditures from "./pages/Expenditures"; // ✅ New Transparency Page
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
               <Route path="/deeds" element={<Deeds />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/donate" element={<Donate />} /> {/* ✅ Fixed here */}
+              <Route path="/expenditures" element={<Expenditures />} />
             </Routes>
           </Container>
           <Footer />
