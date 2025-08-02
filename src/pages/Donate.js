@@ -76,12 +76,15 @@ export default function Donate() {
     } catch (err) {
       console.error(err);
       toast({
-        title: "Error saving pledge",
-        description: "Please try again.",
-        status: "error",
-        duration: 3000,
+        title: "Backend not responding",
+        description: "Proceeding directly to donation page. 🙏",
+        status: "warning",
+        duration: 4000,
         isClosable: true,
       });
+
+      // ✅ Even if backend fails, still show donation page
+      setPledgeSaved(true);
     }
   };
 
