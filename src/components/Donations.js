@@ -14,6 +14,8 @@ import {
   Input,
   useBreakpointValue,
   VStack,
+  Stack,
+  Flex,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { fetchDonations, fetchTotal } from "../api/api";
@@ -27,6 +29,7 @@ export default function Donations() {
   const [search, setSearch] = useState("");
 
   const fontSize = useBreakpointValue({ base: "sm", md: "md" });
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   useEffect(() => {
     Promise.all([fetchDonations(), fetchTotal()])
@@ -56,6 +59,12 @@ export default function Donations() {
 
   if (loading) return <Spinner />;
 
+  // Limit to 5 donors only in mobile view (when no search query)
+  const visibleDonors =
+    isMobile && search === ""
+      ? filteredDonors.slice(0, 5)
+      : filteredDonors;
+
   return (
     <Grid
       templateColumns={{ base: "1fr", md: "2fr 1fr" }}
@@ -81,50 +90,80 @@ export default function Donations() {
             />
           </VStack>
 
-          <TableContainer
-            maxH="220px" // roughly 4 rows based on your font & padding
-            overflowY="auto"
-            borderTop="1px solid #eee"
-            borderRadius="md"
-            sx={{
-              "::-webkit-scrollbar": { width: "4px" },
-              "::-webkit-scrollbar-thumb": {
-                background: "#ccc",
-                borderRadius: "4px",
-              },
-            }}
-          >
-            <Table variant="striped" size="sm" colorScheme="orange">
-              <Thead bg="orange.500" position="sticky" top="0" zIndex={1}>
-                <Tr>
-                  <Th color="white" fontSize={fontSize}>
-                    Donor
-                  </Th>
-                  <Th color="white" fontSize={fontSize} isNumeric>
-                    Amount (₹)
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {filteredDonors.length === 0 ? (
-                  <Tr>
-                    <Td colSpan={2}>No matching donations found.</Td>
-                  </Tr>
-                ) : (
-                  filteredDonors.map((d) => (
-                    <Tr key={d.id}>
-                      <Td fontSize={fontSize}>
+          {isMobile ? (
+            // ---- Mobile View: Card layout (limit 5 by default) ----
+            <Stack spacing={3} p={3}>
+              {visibleDonors.length === 0 ? (
+                <Text>No matching donations found.</Text>
+              ) : (
+                visibleDonors.map((d) => (
+                  <Box
+                    key={d.id}
+                    border="1px solid #eee"
+                    borderRadius="md"
+                    p={3}
+                    bg="orange.50"
+                  >
+                    <Flex justify="space-between" fontSize="sm">
+                      <Text fontWeight="bold">
                         {`${d.donorFirstName || ""} ${d.donorLastName || ""}`}
-                      </Td>
-                      <Td isNumeric fontSize={fontSize}>
-                        {d.amount?.toLocaleString("en-IN")}
-                      </Td>
+                      </Text>
+                      <Text color="orange.700" fontWeight="semibold">
+                        ₹ {d.amount?.toLocaleString("en-IN")}
+                      </Text>
+                    </Flex>
+                  </Box>
+                ))
+              )}
+            </Stack>
+          ) : (
+            // ---- Desktop/Tablet View: Table layout ----
+            <TableContainer
+              maxH="220px"
+              overflowY="auto"
+              overflowX="auto"
+              borderTop="1px solid #eee"
+              borderRadius="md"
+              sx={{
+                "::-webkit-scrollbar": { width: "4px", height: "4px" },
+                "::-webkit-scrollbar-thumb": {
+                  background: "#ccc",
+                  borderRadius: "4px",
+                },
+              }}
+            >
+              <Table variant="striped" size="sm" colorScheme="orange">
+                <Thead bg="orange.500" position="sticky" top="0" zIndex={1}>
+                  <Tr>
+                    <Th color="white" fontSize={fontSize}>
+                      Donor
+                    </Th>
+                    <Th color="white" fontSize={fontSize} isNumeric>
+                      Amount (₹)
+                    </Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {filteredDonors.length === 0 ? (
+                    <Tr>
+                      <Td colSpan={2}>No matching donations found.</Td>
                     </Tr>
-                  ))
-                )}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                  ) : (
+                    filteredDonors.map((d) => (
+                      <Tr key={d.id}>
+                        <Td fontSize={fontSize}>
+                          {`${d.donorFirstName || ""} ${d.donorLastName || ""}`}
+                        </Td>
+                        <Td isNumeric fontSize={fontSize}>
+                          {d.amount?.toLocaleString("en-IN")}
+                        </Td>
+                      </Tr>
+                    ))
+                  )}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          )}
         </Box>
 
         <Text fontSize="md" fontWeight="bold" mt={4}>

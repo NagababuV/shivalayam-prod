@@ -157,7 +157,9 @@ export default function Donate() {
         <Box textAlign="center" mt={6}>
           <Button
             as="a"
-            href={`https://wa.me/919493575676?text=Namaste,%20I%20(${donorFirstName}%20${donorLastName})%20have%20donated%20₹${amount}.%20Sharing%20the%20screenshot%20here.`}
+            href={`https://wa.me/919493575676?text=${encodeURIComponent(
+              `Namaste, I (${donorFirstName} ${donorLastName}) have donated ₹${amount}. Sharing the screenshot here.`
+            )}`}
             target="_blank"
             rel="noopener noreferrer"
             size="lg"

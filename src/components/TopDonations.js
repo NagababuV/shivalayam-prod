@@ -12,6 +12,8 @@ import {
   Spinner,
   Text,
   useBreakpointValue,
+  Stack,
+  Flex,
 } from "@chakra-ui/react";
 import { fetchTopDonations } from "../api/api";
 
@@ -20,7 +22,9 @@ const rankIcons = ["🥇", "🥈", "🥉", "⭐", "⭐"];
 const TopDonations = () => {
   const [topDonors, setTopDonors] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const fontSize = useBreakpointValue({ base: "sm", md: "md" });
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   useEffect(() => {
     fetchTopDonations()
@@ -29,17 +33,40 @@ const TopDonations = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  if (loading) return <Spinner />;
+  if (topDonors.length === 0) return <Text>No top donations yet.</Text>;
+
   return (
     <Box>
       <Text fontSize="xl" fontWeight="bold" mb={2}>
         Top 5 Donors
       </Text>
 
-      {loading ? (
-        <Spinner />
-      ) : topDonors.length === 0 ? (
-        <Text>No top donations yet.</Text>
+      {isMobile ? (
+        // ---- Mobile: Card layout ----
+        <Stack spacing={3}>
+          {topDonors.map((donor, index) => (
+            <Box
+              key={donor.id}
+              border="1px solid #eee"
+              borderRadius="md"
+              p={3}
+              bg="orange.50"
+            >
+              <Flex justify="space-between" mb={1}>
+                <Text fontWeight="bold">
+                  {rankIcons[index] || "⭐"}{" "}
+                  {`${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
+                </Text>
+                <Text color="orange.700" fontWeight="semibold">
+                  ₹ {donor.amount?.toLocaleString("en-IN")}
+                </Text>
+              </Flex>
+            </Box>
+          ))}
+        </Stack>
       ) : (
+        // ---- Desktop/Tablet: Table layout ----
         <TableContainer
           maxH="300px"
           overflowY="auto"
