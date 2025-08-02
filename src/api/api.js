@@ -1,6 +1,6 @@
   import axios from "axios";
 
-  const API_BASE = "http://65.1.24.123:8080";
+  const API_BASE = "https://65.1.24.123:8080";
 
   // 📦 Public APIs
   export const fetchPhotos = () => axios.get(`${API_BASE}/api/photos`);
