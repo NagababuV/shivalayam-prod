@@ -13,6 +13,7 @@ import image2 from "../images/image2.png";
 import image3 from "../images/image3.jpeg";
 import image4 from "../images/image4.jpeg";
 import image5 from "../images/image5.jpeg";
+import image6 from "../images/image6.jpeg";
 
 export default function PhotoCarousel() {
   const [photos, setPhotos] = useState([]);
@@ -21,6 +22,7 @@ export default function PhotoCarousel() {
 
   useEffect(() => {
     const localImages = [
+      { id: "local-6", url: image6, filename: "image6.jpeg" },
       { id: "local-1", url: image1, filename: "image1.jpeg" },
       { id: "local-2", url: image2, filename: "image2.png" },
       { id: "local-3", url: image3, filename: "image3.jpeg" },

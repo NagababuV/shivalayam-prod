@@ -17,7 +17,7 @@ import {
   Stack,
   Flex,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { fetchDonations, fetchTotal } from "../api/api";
 import TopDonations from "../components/TopDonations";
 
@@ -31,11 +31,16 @@ export default function Donations() {
   const fontSize = useBreakpointValue({ base: "sm", md: "md" });
   const isMobile = useBreakpointValue({ base: true, md: false });
 
+  // 🔹 Ref for auto-scroll
+  const scrollRef = useRef(null);
+
   useEffect(() => {
     Promise.all([fetchDonations(), fetchTotal()])
       .then(([dRes, tRes]) => {
-        setDonors(dRes.data);
-        setFilteredDonors(dRes.data);
+        // ✅ Keep original order, so newest goes to end
+        const sorted = [...dRes.data].sort((a, b) => a.id - b.id);
+        setDonors(sorted);
+        setFilteredDonors(sorted);
         setTotal(tRes.data);
       })
       .catch(console.error)
@@ -57,13 +62,30 @@ export default function Donations() {
     }
   }, [search, donors]);
 
+  // 🔹 Advanced upward scrolling effect
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    let scrollStep = 1; // px per step
+    const interval = setInterval(() => {
+      if (container.scrollTop <= 0) {
+        // Reached top → jump back to bottom
+        container.scrollTo({ top: container.scrollHeight, behavior: "auto" });
+      } else {
+        // Scroll upward
+        container.scrollBy({ top: -scrollStep, behavior: "smooth" });
+      }
+    }, 100); // adjust speed (lower = faster)
+
+    return () => clearInterval(interval);
+  }, [filteredDonors]);
+
   if (loading) return <Spinner />;
 
   // Limit to 5 donors only in mobile view (when no search query)
   const visibleDonors =
-    isMobile && search === ""
-      ? filteredDonors.slice(0, 5)
-      : filteredDonors;
+    isMobile && search === "" ? filteredDonors.slice(0, 5) : filteredDonors;
 
   return (
     <Grid
@@ -91,8 +113,21 @@ export default function Donations() {
           </VStack>
 
           {isMobile ? (
-            // ---- Mobile View: Card layout (limit 5 by default) ----
-            <Stack spacing={3} p={3}>
+            // ---- Mobile View: Card layout ----
+            <Stack
+              ref={scrollRef}
+              spacing={3}
+              p={3}
+              maxH="220px"
+              overflowY="auto"
+              sx={{
+                "::-webkit-scrollbar": { width: "4px" },
+                "::-webkit-scrollbar-thumb": {
+                  background: "#ccc",
+                  borderRadius: "4px",
+                },
+              }}
+            >
               {visibleDonors.length === 0 ? (
                 <Text>No matching donations found.</Text>
               ) : (
@@ -119,6 +154,7 @@ export default function Donations() {
           ) : (
             // ---- Desktop/Tablet View: Table layout ----
             <TableContainer
+              ref={scrollRef}
               maxH="220px"
               overflowY="auto"
               overflowX="auto"
