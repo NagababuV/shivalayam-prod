@@ -1,6 +1,6 @@
   import axios from "axios";
-  //const API_BASE = "https://api.sivalayamthokada.org"
-  const API_BASE = "http://localhost:8080";
+    const API_BASE = "https://api.sivalayamthokada.org"
+    //const API_BASE = "http://localhost:8080";
 
   // 📦 Public APIs
   export const fetchPhotos = () => axios.get(`${API_BASE}/api/photos`);
