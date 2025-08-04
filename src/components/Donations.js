@@ -84,8 +84,10 @@ export default function Donations() {
   if (loading) return <Spinner />;
 
   // Limit to 5 donors only in mobile view (when no search query)
-  const visibleDonors =
-    isMobile && search === "" ? filteredDonors.slice(0, 5) : filteredDonors;
+  // const visibleDonors =
+  //   isMobile && search === "" ? filteredDonors.slice(0, 5) : filteredDonors;
+
+    const visibleDonors = filteredDonors
 
   return (
     <Grid
