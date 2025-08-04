@@ -92,6 +92,15 @@ export default function Donate() {
   };
 
   if (pledgeSaved) {
+    // ✅ Deep links
+    const phonePeLink = `phonepe://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
+      donorFirstName + " " + donorLastName
+    )}`;
+
+    const upiFallbackLink = `upi://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
+      donorFirstName + " " + donorLastName
+    )}`;
+
     return (
       <Box p={6} bg="white" borderRadius="md" boxShadow="lg" maxW="700px" mx="auto">
         <Heading textAlign="center" fontSize="2xl" color="orange.500" mb={4}>
@@ -120,14 +129,15 @@ export default function Donate() {
           </VStack>
         </SimpleGrid>
 
-        {/* Direct UPI link */}
+        {/* Direct PhonePe + fallback */}
         <Button
           as="a"
-          href={`upi://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
-            donorFirstName + " " + donorLastName
-          )}`}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={phonePeLink}
+          onClick={(e) => {
+            setTimeout(() => {
+              window.location.href = upiFallbackLink; // fallback if PhonePe not installed
+            }, 2000);
+          }}
           size="lg"
           px={8}
           py={6}
@@ -148,75 +158,74 @@ export default function Donate() {
           width="100%"
           mb={6}
         >
-          💳 Pay with UPI App
+          💳 Pay with PhonePe
         </Button>
 
+        {/* Bank Transfer Info */}
         <Box
-  borderRadius="lg"
-  p={6}
-  mt={6}
-  bg="white"
-  boxShadow="md"
-  border="1px solid"
-  borderColor="gray.200"
->
-  <Heading
-    fontSize="xl"
-    mb={4}
-    textAlign="center"
-    color="red.600"
-    fontWeight="semibold"
-  >
-    Bank Transfer Details
-  </Heading>
+          borderRadius="lg"
+          p={6}
+          mt={6}
+          bg="white"
+          boxShadow="md"
+          border="1px solid"
+          borderColor="gray.200"
+        >
+          <Heading
+            fontSize="xl"
+            mb={4}
+            textAlign="center"
+            color="red.600"
+            fontWeight="semibold"
+          >
+            Bank Transfer Details
+          </Heading>
 
-  <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-    <Box>
-      <Text fontSize="sm" color="gray.500">Account Name</Text>
-      <Text fontWeight="bold" color="gray.800">
-        SRI ANNAPURNA SAMETHA VISWESWARA SWAMY ALAYA TRUST
-      </Text>
-    </Box>
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+            <Box>
+              <Text fontSize="sm" color="gray.500">Account Name</Text>
+              <Text fontWeight="bold" color="gray.800">
+                SRI ANNAPURNA SAMETHA VISWESWARA SWAMY ALAYA TRUST
+              </Text>
+            </Box>
 
-    <Box>
-      <Text fontSize="sm" color="gray.500">Bank</Text>
-      <Text fontWeight="bold" color="gray.800">Union Bank of India</Text>
-    </Box>
+            <Box>
+              <Text fontSize="sm" color="gray.500">Bank</Text>
+              <Text fontWeight="bold" color="gray.800">Union Bank of India</Text>
+            </Box>
 
-    <Box>
-      <Text fontSize="sm" color="gray.500">Account Number</Text>
-      <Text
-        fontWeight="bold"
-        color="gray.800"
-        cursor="pointer"
-        _hover={{ color: "red.600" }}
-        onClick={() => navigator.clipboard.writeText("02811100000106")}
-      >
-        02811100000106 📋
-      </Text>
-    </Box>
+            <Box>
+              <Text fontSize="sm" color="gray.500">Account Number</Text>
+              <Text
+                fontWeight="bold"
+                color="gray.800"
+                cursor="pointer"
+                _hover={{ color: "red.600" }}
+                onClick={() => navigator.clipboard.writeText("02811100000106")}
+              >
+                02811100000106 📋
+              </Text>
+            </Box>
 
-    <Box>
-      <Text fontSize="sm" color="gray.500">IFSC Code</Text>
-      <Text
-        fontWeight="bold"
-        color="gray.800"
-        cursor="pointer"
-        _hover={{ color: "red.600" }}
-        onClick={() => navigator.clipboard.writeText("UBIN0802816")}
-      >
-        UBIN0802816 📋
-      </Text>
-    </Box>
+            <Box>
+              <Text fontSize="sm" color="gray.500">IFSC Code</Text>
+              <Text
+                fontWeight="bold"
+                color="gray.800"
+                cursor="pointer"
+                _hover={{ color: "red.600" }}
+                onClick={() => navigator.clipboard.writeText("UBIN0802816")}
+              >
+                UBIN0802816 📋
+              </Text>
+            </Box>
 
-    <Box>
-      <Text fontSize="sm" color="gray.500">Branch</Text>
-      <Text fontWeight="bold" color="gray.800">Thokada</Text>
-    </Box>
-  </SimpleGrid>
-</Box>
-
-
+            <Box>
+              <Text fontSize="sm" color="gray.500">Branch</Text>
+              <Text fontWeight="bold" color="gray.800">Thokada</Text>
+            </Box>
+          </SimpleGrid>
+        </Box>
 
         {/* WhatsApp Share Link */}
         <Box textAlign="center" mt={6}>
