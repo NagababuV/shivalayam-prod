@@ -8,6 +8,7 @@ import {
   Button,
   FormControl,
   FormLabel,
+  FormErrorMessage,
   useToast,
   Image,
   SimpleGrid,
@@ -24,42 +25,45 @@ export default function Donate() {
   const [donorLastName, setDonorLastName] = useState("");
   const [mobile, setMobile] = useState("");
   const [amount, setAmount] = useState("");
+  const [touched, setTouched] = useState({});
   const [pledgeSaved, setPledgeSaved] = useState(false);
 
   const toast = useToast();
 
-  // ✅ Validation function
-  const validateForm = () => {
-    const nameRegex = /^[A-Za-z]{2,}$/;
-    const mobileRegex = /^[6-9]\d{9}$/;
-    const amt = parseFloat(amount);
+  // ✅ Helpers
+  const trimValue = (val) => val.trim();
 
-    if (!nameRegex.test(donorFirstName)) {
-      toast({ title: "Invalid First Name", description: "Only alphabets, min 2 chars.", status: "error" });
-      return false;
-    }
-    if (!nameRegex.test(donorLastName)) {
-      toast({ title: "Invalid Last Name", description: "Only alphabets, min 2 chars.", status: "error" });
-      return false;
-    }
-    if (!mobileRegex.test(mobile)) {
-      toast({ title: "Invalid Mobile", description: "Enter valid 10-digit mobile.", status: "error" });
-      return false;
-    }
-    if (isNaN(amt) || amt <= 0) {
-      toast({ title: "Invalid Amount", description: "Enter a valid amount greater than 0.", status: "error" });
-      return false;
-    }
-    return true;
-  };
+  const validateFirstName = () => /^[A-Za-z]{1,}$/.test(trimValue(donorFirstName));
+  const validateLastName = () => /^[A-Za-z]{1,}$/.test(trimValue(donorLastName));
+  const validateMobile = () => /^[6-9]\d{9}$/.test(mobile);
+  const validateAmount = () => parseFloat(amount) > 0;
+
+  const isFirstNameError = touched.firstName && !validateFirstName();
+  const isLastNameError = touched.lastName && !validateLastName();
+  const isMobileError = touched.mobile && !validateMobile();
+  const isAmountError = touched.amount && !validateAmount();
+
+  const validateForm = () =>
+    validateFirstName() && validateLastName() && validateMobile() && validateAmount();
 
   const handlePledge = async () => {
-    if (!validateForm()) return;
+    setTouched({ firstName: true, lastName: true, mobile: true, amount: true });
+
+    if (!validateForm()) {
+      toast({
+        title: "Please correct errors",
+        description: "Fill all fields correctly before proceeding 🙏",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
 
     try {
       await createPledge({
-        donorFirstName,
-        donorLastName,
+        donorFirstName: trimValue(donorFirstName),
+        donorLastName: trimValue(donorLastName),
         mobile,
         amount: parseFloat(amount),
       });
@@ -83,7 +87,6 @@ export default function Donate() {
         isClosable: true,
       });
 
-      // ✅ Even if backend fails, still show donation page
       setPledgeSaved(true);
     }
   };
@@ -123,35 +126,97 @@ export default function Donate() {
           href={`upi://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
             donorFirstName + " " + donorLastName
           )}`}
-          colorScheme="green"
+          target="_blank"
+          rel="noopener noreferrer"
           size="lg"
+          px={8}
+          py={6}
+          borderRadius="full"
+          color="white"
+          fontWeight="bold"
+          fontSize={{ base: "sm", md: "md", lg: "lg" }}
+          _hover={{ transform: "scale(1.05)" }}
+          sx={{
+            background: "linear-gradient(90deg, #0070F3, #7928CA)",
+            animation: "blinkUpi 1.5s infinite",
+            "@keyframes blinkUpi": {
+              "0%": { background: "linear-gradient(90deg, #0070F3, #7928CA)", opacity: 1 },
+              "50%": { background: "linear-gradient(90deg, #7928CA, #0070F3)", opacity: 0.7 },
+              "100%": { background: "linear-gradient(90deg, #0070F3, #7928CA)", opacity: 1 },
+            },
+          }}
           width="100%"
           mb={6}
         >
-          Pay with UPI App
+          💳 Pay with UPI App
         </Button>
 
-        {/* Bank Transfer Info */}
-        <Box border="1px solid #d33" borderRadius="md" p={4} bg="white">
-          <Heading fontSize="lg" mb={3} color="red.600">
-            Bank Transfer Details
-          </Heading>
-          <Text>
-            <strong>Account Name:</strong> SRI ANNAPURNA SAMETHA VISWESWARA SWAMY ALAYA TRUST
-          </Text>
-          <Text>
-            <strong>Bank:</strong> Union Bank of India
-          </Text>
-          <Text>
-            <strong>Account Number:</strong> 02811100000106
-          </Text>
-          <Text>
-            <strong>IFSC Code:</strong> UBIN0802816
-          </Text>
-          <Text>
-            <strong>Branch:</strong> Thokada
-          </Text>
-        </Box>
+        <Box
+  borderRadius="lg"
+  p={6}
+  mt={6}
+  bg="white"
+  boxShadow="md"
+  border="1px solid"
+  borderColor="gray.200"
+>
+  <Heading
+    fontSize="xl"
+    mb={4}
+    textAlign="center"
+    color="red.600"
+    fontWeight="semibold"
+  >
+    Bank Transfer Details
+  </Heading>
+
+  <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+    <Box>
+      <Text fontSize="sm" color="gray.500">Account Name</Text>
+      <Text fontWeight="bold" color="gray.800">
+        SRI ANNAPURNA SAMETHA VISWESWARA SWAMY ALAYA TRUST
+      </Text>
+    </Box>
+
+    <Box>
+      <Text fontSize="sm" color="gray.500">Bank</Text>
+      <Text fontWeight="bold" color="gray.800">Union Bank of India</Text>
+    </Box>
+
+    <Box>
+      <Text fontSize="sm" color="gray.500">Account Number</Text>
+      <Text
+        fontWeight="bold"
+        color="gray.800"
+        cursor="pointer"
+        _hover={{ color: "red.600" }}
+        onClick={() => navigator.clipboard.writeText("02811100000106")}
+      >
+        02811100000106 📋
+      </Text>
+    </Box>
+
+    <Box>
+      <Text fontSize="sm" color="gray.500">IFSC Code</Text>
+      <Text
+        fontWeight="bold"
+        color="gray.800"
+        cursor="pointer"
+        _hover={{ color: "red.600" }}
+        onClick={() => navigator.clipboard.writeText("UBIN0802816")}
+      >
+        UBIN0802816 📋
+      </Text>
+    </Box>
+
+    <Box>
+      <Text fontSize="sm" color="gray.500">Branch</Text>
+      <Text fontWeight="bold" color="gray.800">Thokada</Text>
+    </Box>
+  </SimpleGrid>
+</Box>
+
+
 
         {/* WhatsApp Share Link */}
         <Box textAlign="center" mt={6}>
@@ -168,9 +233,10 @@ export default function Donate() {
             borderRadius="full"
             color="white"
             fontWeight="bold"
+            fontSize={{ base: "sm", md: "md", lg: "lg" }}
             _hover={{ transform: "scale(1.05)" }}
             sx={{
-              background: "linear-gradient(90deg, #25D366, #FF9933)", // WhatsApp green → Saffron
+              background: "linear-gradient(90deg, #25D366, #FF9933)",
               animation: "blinkBg 1.5s infinite",
               "@keyframes blinkBg": {
                 "0%": { background: "linear-gradient(90deg, #25D366, #FF9933)", opacity: 1 },
@@ -186,59 +252,110 @@ export default function Donate() {
     );
   }
 
-  // ✅ Default: pledge form
+  // ✅ Default: pledge form with improved styling
   return (
-    <Box maxW="500px" mx="auto" p={6} bg="white" borderRadius="md" boxShadow="lg">
-      <Heading textAlign="center" fontSize="2xl" color="orange.500" mb={4}>
+    <Box
+      maxW="500px"
+      mx="auto"
+      p={{ base: 4, md: 6 }}
+      bg="white"
+      borderRadius="2xl"
+      boxShadow="xl"
+      mt={{ base: 4, md: 8 }}
+    >
+      <Heading
+        textAlign="center"
+        fontSize={{ base: "xl", md: "2xl" }}
+        color="orange.500"
+        mb={2}
+      >
         Support the Divine Construction
       </Heading>
-      <Text textAlign="center" mb={6}>
+      <Text textAlign="center" mb={6} fontSize={{ base: "sm", md: "md" }} color="gray.600">
         Please enter your details and proceed with donation. 🙏
       </Text>
 
-      <VStack spacing={4} align="stretch">
-        <FormControl isRequired>
-          <FormLabel>First Name</FormLabel>
+      <VStack spacing={5} align="stretch">
+        <FormControl isRequired isInvalid={isFirstNameError}>
+          <FormLabel fontWeight="semibold">First Name</FormLabel>
           <Input
             placeholder="Enter your first name"
             value={donorFirstName}
             onChange={(e) => setDonorFirstName(e.target.value)}
+            onBlur={() => {
+              setDonorFirstName(trimValue(donorFirstName));
+              setTouched((prev) => ({ ...prev, firstName: true }));
+            }}
+            borderRadius="lg"
+            focusBorderColor="orange.400"
           />
+          {isFirstNameError && <FormErrorMessage>Enter at least 1 letter (A‑Z only).</FormErrorMessage>}
         </FormControl>
 
-        <FormControl isRequired>
-          <FormLabel>Last Name</FormLabel>
+        <FormControl isRequired isInvalid={isLastNameError}>
+          <FormLabel fontWeight="semibold">Last Name</FormLabel>
           <Input
             placeholder="Enter your last name"
             value={donorLastName}
             onChange={(e) => setDonorLastName(e.target.value)}
+            onBlur={() => {
+              setDonorLastName(trimValue(donorLastName));
+              setTouched((prev) => ({ ...prev, lastName: true }));
+            }}
+            borderRadius="lg"
+            focusBorderColor="orange.400"
           />
+          {isLastNameError && <FormErrorMessage>Enter at least 1 letter (A‑Z only).</FormErrorMessage>}
         </FormControl>
 
-        <FormControl isRequired>
-          <FormLabel>Mobile Number</FormLabel>
+        <FormControl isRequired isInvalid={isMobileError}>
+          <FormLabel fontWeight="semibold">Mobile Number</FormLabel>
           <Input
             placeholder="Enter your mobile number"
             type="tel"
             maxLength={10}
             value={mobile}
-            onChange={(e) => setMobile(e.target.value)}
+            onChange={(e) => setMobile(e.target.value.replace(/\D/g, ""))}
+            onBlur={() => setTouched((prev) => ({ ...prev, mobile: true }))}
+            borderRadius="lg"
+            focusBorderColor="orange.400"
           />
+          {isMobileError && <FormErrorMessage>Enter valid 10‑digit mobile number.</FormErrorMessage>}
         </FormControl>
 
-        <FormControl isRequired>
-          <FormLabel>Amount (₹)</FormLabel>
+        <FormControl isRequired isInvalid={isAmountError}>
+          <FormLabel fontWeight="semibold">Amount (₹)</FormLabel>
           <Input
             placeholder="Enter donation amount"
             type="number"
             min={1}
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
+            onBlur={() => setTouched((prev) => ({ ...prev, amount: true }))}
+            borderRadius="lg"
+            focusBorderColor="orange.400"
           />
+          {isAmountError && <FormErrorMessage>Enter a valid amount greater than 0.</FormErrorMessage>}
         </FormControl>
 
-        <Button colorScheme="orange" size="lg" mt={4} onClick={handlePledge}>
-          Save & Continue
+        <Button
+          size="lg"
+          mt={2}
+          py={6}
+          borderRadius="full"
+          fontWeight="bold"
+          fontSize={{ base: "md", md: "lg" }}
+          color="white"
+          onClick={handlePledge}
+          width="100%"
+          bgGradient="linear(to-r, orange.400, red.500)"
+          _hover={{
+            bgGradient: "linear(to-r, red.500, orange.400)",
+            transform: "scale(1.05)",
+          }}
+          transition="all 0.3s ease"
+        >
+          🙏 Save & Continue
         </Button>
       </VStack>
     </Box>
