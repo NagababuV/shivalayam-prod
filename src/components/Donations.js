@@ -32,8 +32,8 @@ export default function Donations() {
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    Promise.all([fetchDonations()])
-      .then(([dRes]) => {
+    fetchDonations()
+      .then((dRes) => {
         const sorted = [...dRes.data].sort((a, b) => a.id - b.id);
         setDonors(sorted);
         setFilteredDonors(sorted);
@@ -57,21 +57,30 @@ export default function Donations() {
     }
   }, [search, donors]);
 
+  // 🔹 Smooth auto-scroll effect (works on mobile + desktop)
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
 
-    let scrollStep = 1;
-    const interval = setInterval(() => {
+    // Always start at bottom when donors change
+    container.scrollTo({ top: container.scrollHeight, behavior: "auto" });
+
+    let scrollStep = 0.5; // very smooth
+    let animationFrameId;
+
+    const scroll = () => {
       if (container.scrollTop <= 0) {
         container.scrollTo({ top: container.scrollHeight, behavior: "auto" });
       } else {
         container.scrollBy({ top: -scrollStep, behavior: "smooth" });
       }
-    }, 40);
+      animationFrameId = requestAnimationFrame(scroll);
+    };
 
-    return () => clearInterval(interval);
-  }, [filteredDonors]);
+    animationFrameId = requestAnimationFrame(scroll);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [filteredDonors, isMobile]);
 
   if (loading) return <Spinner />;
 

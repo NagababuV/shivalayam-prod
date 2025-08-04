@@ -13,12 +13,17 @@ import {
   useBreakpointValue,
   Stack,
   Flex,
-  Circle,
 } from "@chakra-ui/react";
 import { fetchTopDonations } from "../api/api";
 
-// Optional rank-based background colors
-const rankColors = ["#FFD70033", "#C0C0C033", "#CD7F3233", "#F5F5F533", "#F0F8FF33"];
+// Rank-based background colors (mobile view)
+const rankColors = [
+  "#FFD70055", // 🥇 Gold for Rank 1
+  "#C0C0C055", // 🥈 Silver for Rank 2
+  "#CD7F3255", // 🥉 Bronze for Rank 3
+  "#90EE9055", // 🌿 Light Green for Rank 4
+  "#87CEFA55", // 🌊 Light Blue for Rank 5
+];
 
 const TopDonations = () => {
   const [topDonors, setTopDonors] = useState([]);
@@ -44,7 +49,7 @@ const TopDonations = () => {
       </Text>
 
       {isMobile ? (
-        // ---- Enhanced Mobile View: Card layout with styled rank badge ----
+        // ---- Mobile View: Card layout with rank background ----
         <Stack spacing={3}>
           {topDonors.map((donor, index) => (
             <Box
@@ -52,21 +57,31 @@ const TopDonations = () => {
               p={3}
               border="1px solid #eee"
               borderRadius="md"
-              bg={rankColors[index] || "gray.50"}
+              bg="white"
             >
               <Flex justify="space-between" align="center">
-                <Flex align="center" gap={3}>
-                  <Circle size="28px" bg="orange.500" color="white" fontSize="xs" fontWeight="bold">
-                    {index + 1}
-                  </Circle>
-                  <Text fontWeight="bold" fontSize="sm">
-                    {`${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
+                <Box
+                  px={2}
+                  py={1}
+                  borderRadius="md"
+                  bg={rankColors[index] || "gray.100"}
+                  flex="1"
+                  overflow="hidden"
+                >
+                  <Text
+                    fontWeight="bold"
+                    fontSize="sm"
+                    noOfLines={1} // ✅ truncate long names with ellipsis
+                  >
+                    {`${index + 1}. ${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
                   </Text>
-                </Flex>
+                </Box>
                 <Text
                   color="orange.700"
                   fontWeight="semibold"
                   fontSize="sm"
+                  ml={3}
+                  whiteSpace="nowrap"
                 >
                   ₹ {donor.amount?.toLocaleString("en-IN")}
                 </Text>
@@ -75,7 +90,7 @@ const TopDonations = () => {
           ))}
         </Stack>
       ) : (
-        // ---- Desktop/Tablet View: Table layout with emojis ----
+        // ---- Desktop/Tablet View: Table layout ----
         <TableContainer
           maxH="300px"
           overflowY="auto"
@@ -99,7 +114,10 @@ const TopDonations = () => {
             </Thead>
             <Tbody>
               {topDonors.map((donor, index) => (
-                <Tr key={donor.id}>
+                <Tr
+                  key={donor.id}
+                  bg={rankColors[index] || "transparent"} // ✅ subtle background in table too
+                >
                   <Td fontSize={fontSize}>{index + 1}</Td>
                   <Td fontSize={fontSize}>
                     {`${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
