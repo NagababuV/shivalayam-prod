@@ -1,4 +1,3 @@
-// src/pages/Donations.js
 import {
   Table,
   Thead,
@@ -18,13 +17,13 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { useEffect, useState, useRef } from "react";
-import { fetchDonations, fetchTotal } from "../api/api";
+import { fetchDonations /*, fetchTotal */ } from "../api/api";
 import TopDonations from "../components/TopDonations";
 
 export default function Donations() {
   const [donors, setDonors] = useState([]);
   const [filteredDonors, setFilteredDonors] = useState([]);
-  const [total, setTotal] = useState(0);
+  // const [total, setTotal] = useState(0); // 🔹 Commented out total state
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
@@ -35,13 +34,16 @@ export default function Donations() {
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    Promise.all([fetchDonations(), fetchTotal()])
-      .then(([dRes, tRes]) => {
+    Promise.all([
+      fetchDonations(),
+      // fetchTotal() // 🔹 Commented out total fetch
+    ])
+      .then(([dRes /*, tRes*/]) => {
         // ✅ Keep original order, so newest goes to end
         const sorted = [...dRes.data].sort((a, b) => a.id - b.id);
         setDonors(sorted);
         setFilteredDonors(sorted);
-        setTotal(tRes.data);
+        // setTotal(tRes.data); // 🔹 Commented out setting total
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -83,11 +85,7 @@ export default function Donations() {
 
   if (loading) return <Spinner />;
 
-  // Limit to 5 donors only in mobile view (when no search query)
-  // const visibleDonors =
-  //   isMobile && search === "" ? filteredDonors.slice(0, 5) : filteredDonors;
-
-    const visibleDonors = filteredDonors
+  const visibleDonors = filteredDonors;
 
   return (
     <Grid
@@ -204,9 +202,11 @@ export default function Donations() {
           )}
         </Box>
 
+        {/* 🔹 Total collected display commented out
         <Text fontSize="md" fontWeight="bold" mt={4}>
           Total Collected: ₹ {total.toLocaleString("en-IN")}
         </Text>
+        */}
       </Box>
 
       {/* Right: Top Donors */}

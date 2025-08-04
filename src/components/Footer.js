@@ -1,27 +1,28 @@
 import { Box, Text, VStack } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { fetchTotal } from "../api/api";
-import CountUp from "react-countup";
+// import { useEffect, useState } from "react";
+// import { fetchTotal } from "../api/api";
+// import CountUp from "react-countup";
 
 export default function Footer() {
-  const [total, setTotal] = useState(0);
+  // const [total, setTotal] = useState(0);
 
-  useEffect(() => {
-    fetchTotal()
-      .then((res) => setTotal(res.data))
-      .catch(console.error);
-  }, []);
+  // useEffect(() => {
+  //   fetchTotal()
+  //     .then((res) => setTotal(res.data))
+  //     .catch(console.error);
+  // }, []);
 
-  const formatINR = (value) =>
-    new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(value);
+  // const formatINR = (value) =>
+  //   new Intl.NumberFormat("en-IN", {
+  //     style: "currency",
+  //     currency: "INR",
+  //     maximumFractionDigits: 0,
+  //   }).format(value);
 
   return (
     <Box bg="saffron.500" color="white" py={6} mt={10} px={4} position="relative">
-      {/* Total on top-right */}
+      {/* ✅ Commented out total feature (can re-enable later) */}
+      {/*
       <Box position="absolute" top={2} right={4}>
         <Text
           bg="white"
@@ -41,6 +42,7 @@ export default function Footer() {
           />
         </Text>
       </Box>
+      */}
 
       <VStack spacing={2} textAlign="center" mt={6}>
         <Text fontWeight="bold" fontSize="lg">
