@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
   Table,
@@ -14,6 +14,7 @@ import {
   Stack,
   Flex,
 } from "@chakra-ui/react";
+import { keyframes } from "@emotion/react"; // ✅ correct import
 import { fetchTopDonations } from "../api/api";
 
 // Rank-based background colors (mobile view)
@@ -24,6 +25,47 @@ const rankColors = [
   "#90EE9055", // 🌿 Light Green for Rank 4
   "#87CEFA55", // 🌊 Light Blue for Rank 5
 ];
+
+// 🔹 Keyframes for left ↔ right smooth scrolling
+const marquee = keyframes`
+  0% { transform: translateX(0%); }
+  40% { transform: translateX(0%); }
+  50% { transform: translateX(-30%); }
+  90% { transform: translateX(-30%); }
+  100% { transform: translateX(0%); }
+`;
+
+const ScrollingName = ({ children }) => {
+  const textRef = useRef(null);
+  const containerRef = useRef(null);
+  const [isOverflow, setIsOverflow] = useState(false);
+
+  useEffect(() => {
+    if (textRef.current && containerRef.current) {
+      const textWidth = textRef.current.scrollWidth;
+      const boxWidth = containerRef.current.offsetWidth;
+      setIsOverflow(textWidth > boxWidth); // ✅ only animate if overflowing
+    }
+  }, [children]);
+
+  return (
+    <Box
+      ref={containerRef}
+      overflow="hidden"
+      whiteSpace="nowrap"
+    >
+      <Text
+        ref={textRef}
+        fontWeight="bold"
+        fontSize="sm"
+        display="inline-block"
+        animation={isOverflow ? `${marquee} 6s ease-in-out infinite` : "none"}
+      >
+        {children}
+      </Text>
+    </Box>
+  );
+};
 
 const TopDonations = () => {
   const [topDonors, setTopDonors] = useState([]);
@@ -49,7 +91,7 @@ const TopDonations = () => {
       </Text>
 
       {isMobile ? (
-        // ---- Mobile View: Card layout with rank background ----
+        // ---- Mobile View: Card layout with conditional scrolling names ----
         <Stack spacing={3}>
           {topDonors.map((donor, index) => (
             <Box
@@ -68,13 +110,9 @@ const TopDonations = () => {
                   flex="1"
                   overflow="hidden"
                 >
-                  <Text
-                    fontWeight="bold"
-                    fontSize="sm"
-                    noOfLines={1} // ✅ truncate long names with ellipsis
-                  >
+                  <ScrollingName>
                     {`${index + 1}. ${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
-                  </Text>
+                  </ScrollingName>
                 </Box>
                 <Text
                   color="orange.700"
@@ -116,7 +154,7 @@ const TopDonations = () => {
               {topDonors.map((donor, index) => (
                 <Tr
                   key={donor.id}
-                  bg={rankColors[index] || "transparent"} // ✅ subtle background in table too
+                  bg={rankColors[index] || "transparent"}
                 >
                   <Td fontSize={fontSize}>{index + 1}</Td>
                   <Td fontSize={fontSize}>

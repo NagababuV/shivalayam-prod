@@ -57,22 +57,22 @@ export default function Donations() {
     }
   }, [search, donors]);
 
-  // 🔹 Smooth auto-scroll effect (works on mobile + desktop)
+  // 🔹 Smooth auto-scroll effect (iOS + Android + Desktop)
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
 
     // Always start at bottom when donors change
-    container.scrollTo({ top: container.scrollHeight, behavior: "auto" });
+    container.scrollTop = container.scrollHeight;
 
-    let scrollStep = 0.5; // very smooth
+    let scrollStep = 0.3; // super smooth
     let animationFrameId;
 
     const scroll = () => {
       if (container.scrollTop <= 0) {
-        container.scrollTo({ top: container.scrollHeight, behavior: "auto" });
+        container.scrollTop = container.scrollHeight;
       } else {
-        container.scrollBy({ top: -scrollStep, behavior: "smooth" });
+        container.scrollTop -= scrollStep; // ✅ works on iOS too
       }
       animationFrameId = requestAnimationFrame(scroll);
     };
@@ -120,6 +120,7 @@ export default function Donations() {
               maxH="220px"
               overflowY="auto"
               sx={{
+                WebkitOverflowScrolling: "touch", // ✅ iOS smooth scrolling
                 "::-webkit-scrollbar": { width: "4px" },
                 "::-webkit-scrollbar-thumb": {
                   background: "#ccc",
@@ -160,6 +161,7 @@ export default function Donations() {
               borderTop="1px solid #eee"
               borderRadius="md"
               sx={{
+                WebkitOverflowScrolling: "touch", // ✅ iOS fix
                 "::-webkit-scrollbar": { width: "4px", height: "4px" },
                 "::-webkit-scrollbar-thumb": {
                   background: "#ccc",
