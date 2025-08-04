@@ -1,6 +1,6 @@
   import axios from "axios";
 
-  const API_BASE = "https://65.1.24.123";
+  const API_BASE = "https://api.sivalayamthokada.org"
 
   // 📦 Public APIs
   export const fetchPhotos = () => axios.get(`${API_BASE}/api/photos`);
