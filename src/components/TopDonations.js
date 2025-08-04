@@ -1,4 +1,3 @@
-// src/components/TopDonations.js
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -14,10 +13,12 @@ import {
   useBreakpointValue,
   Stack,
   Flex,
+  Circle,
 } from "@chakra-ui/react";
 import { fetchTopDonations } from "../api/api";
 
-const rankIcons = ["🥇", "🥈", "🥉", "⭐", "⭐"];
+// Optional rank-based background colors
+const rankColors = ["#FFD70033", "#C0C0C033", "#CD7F3233", "#F5F5F533", "#F0F8FF33"];
 
 const TopDonations = () => {
   const [topDonors, setTopDonors] = useState([]);
@@ -43,22 +44,30 @@ const TopDonations = () => {
       </Text>
 
       {isMobile ? (
-        // ---- Mobile: Card layout ----
+        // ---- Enhanced Mobile View: Card layout with styled rank badge ----
         <Stack spacing={3}>
           {topDonors.map((donor, index) => (
             <Box
               key={donor.id}
+              p={3}
               border="1px solid #eee"
               borderRadius="md"
-              p={3}
-              bg="orange.50"
+              bg={rankColors[index] || "gray.50"}
             >
-              <Flex justify="space-between" mb={1}>
-                <Text fontWeight="bold">
-                  {rankIcons[index] || "⭐"}{" "}
-                  {`${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
-                </Text>
-                <Text color="orange.700" fontWeight="semibold">
+              <Flex justify="space-between" align="center">
+                <Flex align="center" gap={3}>
+                  <Circle size="28px" bg="orange.500" color="white" fontSize="xs" fontWeight="bold">
+                    {index + 1}
+                  </Circle>
+                  <Text fontWeight="bold" fontSize="sm">
+                    {`${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
+                  </Text>
+                </Flex>
+                <Text
+                  color="orange.700"
+                  fontWeight="semibold"
+                  fontSize="sm"
+                >
                   ₹ {donor.amount?.toLocaleString("en-IN")}
                 </Text>
               </Flex>
@@ -66,7 +75,7 @@ const TopDonations = () => {
           ))}
         </Stack>
       ) : (
-        // ---- Desktop/Tablet: Table layout ----
+        // ---- Desktop/Tablet View: Table layout with emojis ----
         <TableContainer
           maxH="300px"
           overflowY="auto"
@@ -91,7 +100,7 @@ const TopDonations = () => {
             <Tbody>
               {topDonors.map((donor, index) => (
                 <Tr key={donor.id}>
-                  <Td fontSize={fontSize}>{rankIcons[index] || "⭐"}</Td>
+                  <Td fontSize={fontSize}>{index + 1}</Td>
                   <Td fontSize={fontSize}>
                     {`${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
                   </Td>

@@ -17,33 +17,26 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { useEffect, useState, useRef } from "react";
-import { fetchDonations /*, fetchTotal */ } from "../api/api";
+import { fetchDonations } from "../api/api";
 import TopDonations from "../components/TopDonations";
 
 export default function Donations() {
   const [donors, setDonors] = useState([]);
   const [filteredDonors, setFilteredDonors] = useState([]);
-  // const [total, setTotal] = useState(0); // 🔹 Commented out total state
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
   const fontSize = useBreakpointValue({ base: "sm", md: "md" });
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  // 🔹 Ref for auto-scroll
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    Promise.all([
-      fetchDonations(),
-      // fetchTotal() // 🔹 Commented out total fetch
-    ])
-      .then(([dRes /*, tRes*/]) => {
-        // ✅ Keep original order, so newest goes to end
+    Promise.all([fetchDonations()])
+      .then(([dRes]) => {
         const sorted = [...dRes.data].sort((a, b) => a.id - b.id);
         setDonors(sorted);
         setFilteredDonors(sorted);
-        // setTotal(tRes.data); // 🔹 Commented out setting total
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -64,21 +57,18 @@ export default function Donations() {
     }
   }, [search, donors]);
 
-  // 🔹 Advanced upward scrolling effect
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
 
-    let scrollStep = 1; // px per step
+    let scrollStep = 1;
     const interval = setInterval(() => {
       if (container.scrollTop <= 0) {
-        // Reached top → jump back to bottom
         container.scrollTo({ top: container.scrollHeight, behavior: "auto" });
       } else {
-        // Scroll upward
         container.scrollBy({ top: -scrollStep, behavior: "smooth" });
       }
-    }, 100); // adjust speed (lower = faster)
+    }, 40);
 
     return () => clearInterval(interval);
   }, [filteredDonors]);
@@ -201,16 +191,10 @@ export default function Donations() {
             </TableContainer>
           )}
         </Box>
-
-        {/* 🔹 Total collected display commented out
-        <Text fontSize="md" fontWeight="bold" mt={4}>
-          Total Collected: ₹ {total.toLocaleString("en-IN")}
-        </Text>
-        */}
       </Box>
 
       {/* Right: Top Donors */}
-      <TopDonations />
+      <TopDonations isMobile={isMobile} />
     </Grid>
   );
 }
