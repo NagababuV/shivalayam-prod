@@ -190,6 +190,22 @@ const AdminUpload = () => {
     }
   };
 
+
+
+  const handleDeletePledge = async (pledgeId) => {
+    try {
+      await deletePledge(pledgeId, token);
+      toast({ title: "Pledge deleted", status: "info" });
+      await loadPledges();
+    } catch (err) {
+      toast({
+        title: "Delete failed",
+        description: err.message,
+        status: "error",
+      });
+    }
+  };
+
   // ✅ Select donor
   const handleSelectDonor = (id) => {
     const donor = donors.find((d) => d.id === id);
@@ -357,14 +373,24 @@ const AdminUpload = () => {
                     <Td isNumeric>{p.amount}</Td>
                     <Td>{p.date}</Td>
                     <Td>
-                      <Button
-                        size="sm"
-                        colorScheme="green"
-                        onClick={() => handleApprovePledge(p)}
-                        isLoading={approvingId === p.id}
-                      >
-                        Approve
-                      </Button>
+                      <HStack spacing={2}>
+                        <Button
+                          size="sm"
+                          colorScheme="green"
+                          onClick={() => handleApprovePledge(p)}
+                          isLoading={approvingId === p.id}
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          colorScheme="red"
+                          variant="outline"
+                          onClick={() => handleDeletePledge(p.id)}
+                        >
+                          Delete
+                        </Button>
+                      </HStack>
                     </Td>
                   </Tr>
                 ))}
