@@ -28,7 +28,7 @@ export default function Donate() {
 
   const toast = useToast();
   const trimValue = (val) => val.trim();
-  const now = new Date().toLocaleString("en-IN"); 
+  const now = new Date().toLocaleString("en-IN");
 
   const validateFirstName = () => /^[A-Za-z]{1,}$/.test(trimValue(donorFirstName));
   const validateLastName = () => /^[A-Za-z]{1,}$/.test(trimValue(donorLastName));
@@ -110,20 +110,36 @@ export default function Donate() {
         </Text>
 
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} mb={8}>
-          <VStack p={4} border="1px solid #ddd" borderRadius="md" bg="white">
+          <VStack p={4} border="1px solid #ddd" borderRadius="md" bg="white" spacing={4}>
             <Text fontWeight="bold">Scan & Pay via PhonePe</Text>
             <Image src={phonepeQR} alt="PhonePe QR" maxH="250px" objectFit="contain" />
-            <Text fontSize="sm" color="gray.600" cursor="pointer" _hover={{ color: "red.600" }} onClick={() => copyToClipboard("Q684141060@ybl")}>
-              UPI ID: <strong>Q684141060@ybl</strong> 📋
-            </Text>
+            <Button
+              onClick={() => copyToClipboard("Q684141060@ybl")}
+              size="sm"
+              colorScheme="purple"
+              variant="outline"
+              leftIcon={<span role="img" aria-label="copy">📋</span>}
+              _hover={{ transform: "scale(1.05)", bg: "purple.50" }}
+              transition="all 0.2s ease"
+            >
+              Copy PhonePe UPI ID
+            </Button>
           </VStack>
 
-          <VStack p={4} border="1px solid #ddd" borderRadius="md" bg="white">
+          <VStack p={4} border="1px solid #ddd" borderRadius="md" bg="white" spacing={4}>
             <Text fontWeight="bold">Union Bank UPI</Text>
             <Image src={unionQR} alt="Union Bank QR" maxH="250px" objectFit="contain" />
-            <Text fontSize="sm" color="gray.600" cursor="pointer" _hover={{ color: "red.600" }} onClick={() => copyToClipboard("QR919493575676-0106@unionbankofindia")}>
-              UPI ID: <strong>QR919493575676-0106@unionbankofindia</strong> 📋
-            </Text>
+            <Button
+              onClick={() => copyToClipboard("QR919493575676-0106@unionbankofindia")}
+              size="sm"
+              colorScheme="green"
+              variant="outline"
+              leftIcon={<span role="img" aria-label="copy">📋</span>}
+              _hover={{ transform: "scale(1.05)", bg: "green.50" }}
+              transition="all 0.2s ease"
+            >
+              Copy Bank UPI ID
+            </Button>
           </VStack>
         </SimpleGrid>
 
