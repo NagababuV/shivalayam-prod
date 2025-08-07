@@ -17,6 +17,7 @@ import { useState } from "react";
 import { createPledge } from "../api/api";
 import phonepeQR from "../images/phonepe-qr.png";
 import unionQR from "../images/unionbank-qr.png";
+import unioinBankLogo from "../images/union.png"
 
 export default function Donate() {
   const [donorFirstName, setDonorFirstName] = useState("");
@@ -24,7 +25,7 @@ export default function Donate() {
   const [mobile, setMobile] = useState("");
   const [amount, setAmount] = useState("");
   const [touched, setTouched] = useState({});
-  const [pledgeSaved, setPledgeSaved] = useState(false);
+  const [pledgeSaved, setPledgeSaved] = useState(true);
 
   const toast = useToast();
   const trimValue = (val) => val.trim();
@@ -212,9 +213,24 @@ export default function Donate() {
               </Text>
             </Box>
             <Box>
-              <Text fontSize="sm" color="gray.500">Bank</Text>
-              <Text fontWeight="bold" color="gray.800">Union Bank of India</Text>
+              <Text fontSize="sm" color="gray.500" mb={1}>
+                Bank
+              </Text>
+              <Box display="flex" alignItems="center" gap={2}>
+                <Image
+                  src={unioinBankLogo}
+                  alt="Union Bank logo"
+                  boxSize="20px"
+                  objectFit="contain"
+                />
+                <Text fontWeight="bold" color="gray.800">
+                  Union Bank of India
+                </Text>
+              </Box>
             </Box>
+
+
+
             <Box>
               <Text fontSize="sm" color="gray.500">Account Number</Text>
               <Text fontWeight="bold" color="gray.800" cursor="pointer" _hover={{ color: "red.600" }} onClick={() => copyToClipboard("02811100000106")}>
