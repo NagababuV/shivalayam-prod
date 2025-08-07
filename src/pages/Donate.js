@@ -108,38 +108,68 @@ export default function Donate() {
         <Text textAlign="center" mb={6}>
           Thank you {donorFirstName} 🙏. Please use one of the following methods to make your donation.
         </Text>
-
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} mb={8}>
-          <VStack p={4} border="1px solid #ddd" borderRadius="md" bg="white" spacing={4}>
+          {/* PhonePe Section */}
+          <VStack
+            p={4}
+            border="1px solid #ddd"
+            borderRadius="md"
+            bg="white"
+            spacing={4}
+            transition="box-shadow 0.3s ease"
+            _hover={{ boxShadow: "0 0 10px rgba(128, 90, 213, 0.3)" }} // subtle purple glow
+          >
             <Text fontWeight="bold">Scan & Pay via PhonePe</Text>
             <Image src={phonepeQR} alt="PhonePe QR" maxH="250px" objectFit="contain" />
+
             <Button
               onClick={() => copyToClipboard("Q684141060@ybl")}
               size="sm"
               colorScheme="purple"
-              variant="outline"
+              variant="solid"
               leftIcon={<span role="img" aria-label="copy">📋</span>}
-              _hover={{ transform: "scale(1.05)", bg: "purple.50" }}
-              transition="all 0.2s ease"
+              _hover={{
+                transform: "scale(1.05)",
+                bgGradient: "linear(to-r, purple.400, purple.600)",
+                boxShadow: "0 0 10px rgba(128, 90, 213, 0.5)",
+              }}
+              transition="all 0.3s ease"
             >
               Copy PhonePe UPI ID
             </Button>
+
           </VStack>
 
-          <VStack p={4} border="1px solid #ddd" borderRadius="md" bg="white" spacing={4}>
+          {/* Union Bank Section */}
+          <VStack
+            p={4}
+            border="1px solid #ddd"
+            borderRadius="md"
+            bg="white"
+            spacing={4}
+            transition="box-shadow 0.3s ease"
+            _hover={{ boxShadow: "0 0 10px rgba(56,161,105, 0.3)" }} // subtle green glow
+          >
             <Text fontWeight="bold">Union Bank UPI</Text>
             <Image src={unionQR} alt="Union Bank QR" maxH="250px" objectFit="contain" />
+
             <Button
               onClick={() => copyToClipboard("QR919493575676-0106@unionbankofindia")}
               size="sm"
               colorScheme="green"
-              variant="outline"
+              variant="solid"
               leftIcon={<span role="img" aria-label="copy">📋</span>}
-              _hover={{ transform: "scale(1.05)", bg: "green.50" }}
-              transition="all 0.2s ease"
+              _hover={{
+                transform: "scale(1.05)",
+                bgGradient: "linear(to-r, green.400, green.600)",
+                boxShadow: "0 0 10px rgba(72,187,120,0.5)",
+              }}
+              transition="all 0.3s ease"
             >
               Copy Bank UPI ID
             </Button>
+
+
           </VStack>
         </SimpleGrid>
 
