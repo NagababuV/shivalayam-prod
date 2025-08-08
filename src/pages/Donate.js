@@ -37,7 +37,7 @@ export default function Donate() {
   const [mobile, setMobile] = useState("");
   const [amount, setAmount] = useState("");
   const [touched, setTouched] = useState({});
-  const [pledgeSaved, setPledgeSaved] = useState(true);
+  const [pledgeSaved, setPledgeSaved] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
