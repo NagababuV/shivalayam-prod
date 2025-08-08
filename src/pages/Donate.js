@@ -55,6 +55,7 @@ export default function Donate() {
   const isMobileError = touched.mobile && !validateMobile();
   const isAmountError = touched.amount && !validateAmount();
   const validateForm = () => validateFirstName() && validateLastName() && validateMobile() && validateAmount();
+  const upiID = "QR919493575676-0106@unionbankofindia";
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
@@ -109,11 +110,11 @@ export default function Donate() {
   };
 
   if (pledgeSaved) {
-    const phonePeLink = `phonepe://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
+    const phonePeLink = `phonepe://pay?pa=${upiID}&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
       donorFirstName + " " + donorLastName
     )}`;
 
-    const upiFallbackLink = `upi://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
+    const upiFallbackLink = `upi://pay?pa=${upiID}&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
       donorFirstName + " " + donorLastName
     )}`;
 
@@ -222,14 +223,14 @@ export default function Donate() {
             {
               src: gpayLogo,
               alt: "Google Pay",
-              link: `tez://upi/pay?pa=Q684141060@ybl&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
+              link: `tez://upi/pay?pa=${upiID}&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
                 donorFirstName + " " + donorLastName
               )}`,
             },
             {
               src: paytmLogo,
               alt: "Paytm",
-              link: `paytmmp://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
+              link: `paytmmp://pay?pa=${upiID}&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
                 donorFirstName + " " + donorLastName
               )}`,
             },
