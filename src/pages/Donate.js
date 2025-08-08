@@ -12,12 +12,16 @@ import {
   useToast,
   Image,
   SimpleGrid,
+  Flex
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { createPledge } from "../api/api";
 import phonepeQR from "../images/phonepe-qr.png";
 import unionQR from "../images/unionbank-qr.png";
 import unioinBankLogo from "../images/union.png"
+import phonePeLogo from "../images/phonepay.png";
+import gpayLogo from "../images/googlepay.png";
+import paytmLogo from "../images/paytm.png";
 
 export default function Donate() {
   const [donorFirstName, setDonorFirstName] = useState("");
@@ -74,12 +78,13 @@ export default function Donate() {
         amount: parseFloat(amount),
       });
       toast({
-        title: "Pledge Submitted 🙏",
-        description: "Your pledge has been recorded. Please complete the donation using the options below.",
+        title: "Thank You 🙏",
+        description: 'Your details are recorded. Kindly proceed with your donation using the options provided.',
         status: "success",
         duration: 4000,
         isClosable: true,
       });
+
       setPledgeSaved(true);
     } catch {
       toast({
@@ -97,6 +102,7 @@ export default function Donate() {
     const phonePeLink = `phonepe://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
       donorFirstName + " " + donorLastName
     )}`;
+
     const upiFallbackLink = `upi://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
       donorFirstName + " " + donorLastName
     )}`;
@@ -173,33 +179,67 @@ export default function Donate() {
 
           </VStack>
         </SimpleGrid>
-
-        <Button
-          as="a"
-          href={phonePeLink}
-          onClick={() => setTimeout(() => (window.location.href = upiFallbackLink), 2000)}
-          size="lg"
-          px={8}
-          py={6}
-          borderRadius="full"
-          color="white"
-          fontWeight="bold"
-          fontSize={{ base: "sm", md: "md", lg: "lg" }}
-          _hover={{ transform: "scale(1.05)" }}
-          sx={{
-            background: "linear-gradient(90deg, #0070F3, #7928CA)",
-            animation: "blinkUpi 1.5s infinite",
-            "@keyframes blinkUpi": {
-              "0%": { background: "linear-gradient(90deg, #0070F3, #7928CA)", opacity: 1 },
-              "50%": { background: "linear-gradient(90deg, #7928CA, #0070F3)", opacity: 0.7 },
-              "100%": { background: "linear-gradient(90deg, #0070F3, #7928CA)", opacity: 1 },
-            },
-          }}
-          width="100%"
-          mb={6}
+        {/* UPI Payment Logos Row - Circle Style */}
+        <Flex
+          justify="center"
+          align="center"
+          gap={{ base: 6, md: 10 }}
+          wrap="wrap"
+          my={6}
         >
-          💳 Pay with PhonePe
-        </Button>
+          {[
+            { src: phonePeLogo, alt: "PhonePe", link: phonePeLink },
+            {
+              src: gpayLogo,
+              alt: "Google Pay",
+              link: `tez://upi/pay?pa=Q684141060@ybl&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
+                donorFirstName + " " + donorLastName
+              )}`,
+            },
+            {
+              src: paytmLogo,
+              alt: "Paytm",
+              link: `paytmmp://pay?pa=Q684141060@ybl&pn=ShivalayamTrust&am=${amount}&cu=INR&tn=Donation+by+${encodeURIComponent(
+                donorFirstName + " " + donorLastName
+              )}`,
+            },
+          ].map(({ src, alt, link }, index) => (
+            <Box
+              as="a"
+              key={index}
+              href={link}
+              onClick={() =>
+                setTimeout(() => (window.location.href = upiFallbackLink), 2000)
+              }
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              bg="white"
+              border="2px solid"
+              borderColor="gray.200"
+              borderRadius="full"
+              p={3}
+              boxShadow="sm"
+              _hover={{ transform: "scale(1.12)", boxShadow: "md" }}
+              transition="all 0.3s ease"
+              w={{ base: "70px", md: "85px" }}
+              h={{ base: "70px", md: "85px" }}
+            >
+              <Image
+                src={src}
+                alt={alt}
+                boxSize={
+                  alt === "PhonePe"
+                    ? { base: "52px", md: "62px" } // Bigger PhonePe logo
+                    : { base: "45px", md: "55px" }
+                }
+                objectFit="contain"
+              />
+            </Box>
+          ))}
+        </Flex>
+
+
 
         <Box borderRadius="lg" p={6} mt={6} bg="white" boxShadow="md" border="1px solid" borderColor="gray.200">
           <Heading fontSize="xl" mb={4} textAlign="center" color="red.600" fontWeight="semibold">
