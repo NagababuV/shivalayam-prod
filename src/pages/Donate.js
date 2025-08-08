@@ -12,7 +12,15 @@ import {
   useToast,
   Image,
   SimpleGrid,
-  Flex
+  Flex,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  useDisclosure
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { createPledge } from "../api/api";
@@ -29,7 +37,9 @@ export default function Donate() {
   const [mobile, setMobile] = useState("");
   const [amount, setAmount] = useState("");
   const [touched, setTouched] = useState({});
-  const [pledgeSaved, setPledgeSaved] = useState(false);
+  const [pledgeSaved, setPledgeSaved] = useState(true);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const toast = useToast();
   const trimValue = (val) => val.trim();
@@ -179,6 +189,26 @@ export default function Donate() {
 
           </VStack>
         </SimpleGrid>
+        {/* PhonePe Modal */}
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>PhonePe Not Supported</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              📢 Currently, PhonePe payments via link are not supported.
+              <br />
+              <br />
+              Please scan the QR code or continue with Google Pay / Paytm for a smooth payment experience.
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" onClick={onClose}>
+                OK
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
         {/* UPI Payment Logos Row - Circle Style */}
         <Flex
           justify="center"
@@ -207,10 +237,15 @@ export default function Donate() {
             <Box
               as="a"
               key={index}
-              href={link}
-              onClick={() =>
-                setTimeout(() => (window.location.href = upiFallbackLink), 2000)
-              }
+              href={alt === "PhonePe" ? undefined : link}
+              onClick={(e) => {
+                if (alt === "PhonePe") {
+                  e.preventDefault();
+                  onOpen();
+                } else {
+                  setTimeout(() => (window.location.href = upiFallbackLink), 2000);
+                }
+              }}
               display="flex"
               alignItems="center"
               justifyContent="center"
@@ -230,7 +265,7 @@ export default function Donate() {
                 alt={alt}
                 boxSize={
                   alt === "PhonePe"
-                    ? { base: "52px", md: "62px" } // Bigger PhonePe logo
+                    ? { base: "52px", md: "62px" }
                     : { base: "45px", md: "55px" }
                 }
                 objectFit="contain"
@@ -238,7 +273,6 @@ export default function Donate() {
             </Box>
           ))}
         </Flex>
-
 
 
         <Box borderRadius="lg" p={6} mt={6} bg="white" boxShadow="md" border="1px solid" borderColor="gray.200">
@@ -299,12 +333,19 @@ export default function Donate() {
             target="_blank"
             rel="noopener noreferrer"
             size="lg"
-            px={8}
+            px={{ base: 5, md: 8 }} // less padding on small screens
             py={6}
             borderRadius="full"
             color="white"
             fontWeight="bold"
             fontSize={{ base: "sm", md: "md", lg: "lg" }}
+            display="inline-flex"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
+            whiteSpace="normal"
+            lineHeight="1.4"
+            touchAction="manipulation"
             _hover={{ transform: "scale(1.05)" }}
             sx={{
               background: "linear-gradient(90deg, #25D366, #FF9933)",
@@ -318,6 +359,7 @@ export default function Donate() {
           >
             📲 Share Payment Screenshot on WhatsApp
           </Button>
+
         </Box>
       </Box>
     );
