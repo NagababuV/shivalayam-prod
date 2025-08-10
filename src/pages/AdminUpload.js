@@ -70,18 +70,43 @@ const AdminUpload = () => {
   };
 
   useEffect(() => {
-    if (!token) {
-      toast({
-        title: "Access Denied",
-        description: "Please login first.",
-        status: "warning",
-      });
-      navigate("/admin/login");
-    } else {
-      loadPledges();
-    }
+    const verifySession = async () => {
+      if (!token) {
+        toast({
+          title: "Session Expired",
+          description: "Please login again.",
+          status: "warning",
+        });
+        navigate("/admin/login");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/validate-token`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!res.ok) {
+          throw new Error("Token invalid");
+        }
+
+        loadPledges();
+      } catch (err) {
+        localStorage.removeItem("token");
+        toast({
+          title: "Session Expired",
+          description: "Please login again.",
+          status: "warning",
+        });
+        navigate("/admin/login");
+      }
+    };
+
+    verifySession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, []);
+
 
   // 🔍 Auto search donors (firstName OR lastName OR both)
   useEffect(() => {
