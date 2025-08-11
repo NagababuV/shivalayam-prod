@@ -49,7 +49,13 @@ const ScrollingName = ({ children }) => {
   }, [children]);
 
   return (
-    <Box ref={containerRef} overflow="hidden" whiteSpace="nowrap" minWidth={0}>
+    <Box
+      ref={containerRef}
+      overflow="hidden"
+      whiteSpace="nowrap"
+      minWidth={0}
+      maxWidth="100%" // ✅ new
+    >
       <Text
         ref={textRef}
         fontWeight="bold"
@@ -60,6 +66,7 @@ const ScrollingName = ({ children }) => {
         {children}
       </Text>
     </Box>
+
   );
 };
 
@@ -97,14 +104,15 @@ const TopDonations = () => {
               borderRadius="md"
               bg="white"
             >
-              <Flex justify="space-between" align="center" gap={2}>
+              <Flex justify="space-between" align="center" gap={2} minWidth={0}>
                 <Box
                   px={2}
                   py={1}
                   borderRadius="md"
                   bg={rankColors[index] || "gray.100"}
                   flex="1"
-                  minWidth={0} // allows text to scroll without pushing amount
+                  minWidth={0} // ensures name doesn't cause overflow
+                  maxWidth="100%" // hard stop on width
                   overflow="hidden"
                 >
                   <ScrollingName>
@@ -121,6 +129,7 @@ const TopDonations = () => {
                   ₹ {donor.amount?.toLocaleString("en-IN")}
                 </Text>
               </Flex>
+
             </Box>
           ))}
         </Stack>
