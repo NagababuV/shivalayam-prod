@@ -16,16 +16,16 @@ import {
 } from "@chakra-ui/react";
 import { fetchTopDonations } from "../api/api";
 
-// Rank-based background colors (mobile view)
+// Rank-based background colors
 const rankColors = [
-  "#FFD70055", // 🥇 Gold for Rank 1
-  "#C0C0C055", // 🥈 Silver for Rank 2
-  "#CD7F3255", // 🥉 Bronze for Rank 3
-  "#90EE9055", // 🌿 Light Green for Rank 4
-  "#87CEFA55", // 🌊 Light Blue for Rank 5
+  "#FFD70055", // Gold
+  "#C0C0C055", // Silver
+  "#CD7F3255", // Bronze
+  "#90EE9055", // Light Green
+  "#87CEFA55", // Light Blue
 ];
 
-// 🔹 Shrinks text ONLY if overflowing (used for mobile view)
+// Shrinking text helper
 const ShrinkingName = ({ children, maxFont = 14, minFont = 10 }) => {
   const textRef = useRef(null);
   const containerRef = useRef(null);
@@ -63,7 +63,7 @@ const TopDonations = () => {
   const [topDonors, setTopDonors] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fontSize = useBreakpointValue({ base: "sm", md: "md" });
+  const fontSize = useBreakpointValue({ base: "md", md: "md" }); // bigger on mobile
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   useEffect(() => {
@@ -77,13 +77,13 @@ const TopDonations = () => {
   if (topDonors.length === 0) return <Text>No top donations yet.</Text>;
 
   return (
-    <Box>
-      <Text fontSize="xl" fontWeight="bold" mb={2}>
+    <Box w="100%" px={{ base: 2, md: 0 }}>
+      <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="bold" mb={2} textAlign="center">
         Top 5 Donors
       </Text>
 
       {isMobile ? (
-        // ---- Mobile: Card layout with shrinking text ----
+        // Mobile view
         <Stack spacing={3}>
           {topDonors.map((donor, index) => (
             <Box
@@ -111,7 +111,7 @@ const TopDonations = () => {
                 <Text
                   color="orange.700"
                   fontWeight="semibold"
-                  fontSize="sm"
+                  fontSize="md"
                   flexShrink={0}
                   whiteSpace="nowrap"
                 >
@@ -122,21 +122,23 @@ const TopDonations = () => {
           ))}
         </Stack>
       ) : (
-        // ---- Desktop/Tablet: Table layout without shrinking ----
+        // Desktop view
         <TableContainer
           maxH="300px"
           overflowY="auto"
+          overflowX="auto"
           border="1px solid #eee"
           borderRadius="md"
+          w="100%"
           sx={{
-            "::-webkit-scrollbar": { width: "4px" },
+            "::-webkit-scrollbar": { width: "4px", height: "4px" },
             "::-webkit-scrollbar-thumb": {
               background: "#ccc",
               borderRadius: "4px",
             },
           }}
         >
-          <Table variant="striped" size="sm" colorScheme="orange">
+          <Table variant="striped" size="md" colorScheme="orange" minW="500px">
             <Thead bg="orange.500" position="sticky" top="0" zIndex={1}>
               <Tr>
                 <Th color="white" fontSize={fontSize}>
@@ -152,10 +154,7 @@ const TopDonations = () => {
             </Thead>
             <Tbody>
               {topDonors.map((donor, index) => (
-                <Tr
-                  key={donor.id}
-                  bg={rankColors[index] || "transparent"}
-                >
+                <Tr key={donor.id} bg={rankColors[index] || "transparent"}>
                   <Td fontSize={fontSize}>{index + 1}</Td>
                   <Td fontSize={fontSize} maxW="250px" isTruncated>
                     {`${donor.donorLastName || ""} ${donor.donorFirstName || ""}`}
