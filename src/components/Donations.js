@@ -189,7 +189,7 @@ export default function Donations() {
                     filteredDonors.map((d) => (
                       <Tr key={d.id}>
                         <Td fontSize={fontSize}>
-                          {`${d.donorFirstName || ""} ${d.donorLastName || ""}`}
+                          {`${d.donorLastName || ""} ${d.donorFirstName || ""}`}
                         </Td>
                         <Td isNumeric fontSize={fontSize}>
                           {d.amount?.toLocaleString("en-IN")}

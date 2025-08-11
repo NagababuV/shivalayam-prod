@@ -161,7 +161,7 @@ const TopDonations = () => {
                 >
                   <Td fontSize={fontSize}>{index + 1}</Td>
                   <Td fontSize={fontSize}>
-                    {`${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
+                    {`${donor.donorLastName || ""} ${donor.donorFirstName || ""}`}
                   </Td>
                   <Td isNumeric fontSize={fontSize}>
                     ₹ {donor.amount?.toLocaleString("en-IN")}
