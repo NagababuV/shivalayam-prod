@@ -89,9 +89,7 @@ const TopDonations = () => {
       <Text fontSize="xl" fontWeight="bold" mb={2}>
         Top 5 Donors
       </Text>
-
       {isMobile ? (
-        // ---- Mobile View: Card layout without ranks ----
         <Stack spacing={3}>
           {topDonors.map((donor, index) => (
             <Box
@@ -101,24 +99,28 @@ const TopDonations = () => {
               borderRadius="md"
               bg="white"
             >
-              <Flex justify="space-between" align="center">
+              <Flex justify="space-between" align="center" gap={2}>
+                {/* Name box - takes remaining space */}
                 <Box
                   px={2}
                   py={1}
                   borderRadius="md"
                   bg={rankColors[index] || "gray.100"}
                   flex="1"
+                  minWidth={0} // ✅ Allows scrolling inside without pushing amount
                   overflow="hidden"
                 >
                   <ScrollingName>
                     {`${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
                   </ScrollingName>
                 </Box>
+
+                {/* Amount box - fixed width */}
                 <Text
                   color="orange.700"
                   fontWeight="semibold"
                   fontSize="sm"
-                  ml={3}
+                  flexShrink={0} // ✅ Prevent shrinking
                   whiteSpace="nowrap"
                 >
                   ₹ {donor.amount?.toLocaleString("en-IN")}
