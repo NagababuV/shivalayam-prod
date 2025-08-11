@@ -1,6 +1,6 @@
   import axios from "axios";
-    const API_BASE = "https://api.sivalayamthokada.org"
-    //const API_BASE = "http://localhost:8080";
+   const API_BASE = "https://api.sivalayamthokada.org"
+   //const API_BASE = "http://localhost:8080";
 
   // 📦 Public APIs
   export const fetchPhotos = () => axios.get(`${API_BASE}/api/photos`);
@@ -20,7 +20,7 @@
   export const verifyOtp = (mobile, otp) =>
     axios.post(`${API_BASE}/auth/verify-otp`, { mobile, otp });
 
-  // 🔒 Admin APIs (require Bearer Token)
+  // 🔒 Admin APIs (require Bearer Token)ß
   export const uploadDonation = (donation, token) =>
     axios.post(`${API_BASE}/api/admin/donations`, donation, {
       headers: { Authorization: `Bearer ${token}` },

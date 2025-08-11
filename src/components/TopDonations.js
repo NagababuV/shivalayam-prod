@@ -91,7 +91,7 @@ const TopDonations = () => {
       </Text>
 
       {isMobile ? (
-        // ---- Mobile View: Card layout with conditional scrolling names ----
+        // ---- Mobile View: Card layout without ranks ----
         <Stack spacing={3}>
           {topDonors.map((donor, index) => (
             <Box
@@ -111,7 +111,7 @@ const TopDonations = () => {
                   overflow="hidden"
                 >
                   <ScrollingName>
-                    {`${index + 1}. ${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
+                    {`${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
                   </ScrollingName>
                 </Box>
                 <Text
@@ -128,6 +128,7 @@ const TopDonations = () => {
           ))}
         </Stack>
       ) : (
+
         // ---- Desktop/Tablet View: Table layout ----
         <TableContainer
           maxH="300px"
