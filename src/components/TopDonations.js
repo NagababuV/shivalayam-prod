@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Table,
@@ -25,45 +25,11 @@ const rankColors = [
   "#87CEFA55", // Light Blue
 ];
 
-// Shrinking text helper
-const ShrinkingName = ({ children, maxFont = 14, minFont = 10 }) => {
-  const textRef = useRef(null);
-  const containerRef = useRef(null);
-  const [fontSize, setFontSize] = useState(maxFont);
-
-  useEffect(() => {
-    if (textRef.current && containerRef.current) {
-      let currentFont = maxFont;
-      const containerWidth = containerRef.current.offsetWidth;
-      const measure = () => textRef.current.scrollWidth > containerWidth;
-
-      while (measure() && currentFont > minFont) {
-        currentFont -= 0.5;
-        textRef.current.style.fontSize = `${currentFont}px`;
-      }
-      setFontSize(currentFont);
-    }
-  }, [children, maxFont, minFont]);
-
-  return (
-    <Box ref={containerRef} overflow="hidden" whiteSpace="nowrap">
-      <Text
-        ref={textRef}
-        fontWeight="bold"
-        fontSize={`${fontSize}px`}
-        display="inline-block"
-      >
-        {children}
-      </Text>
-    </Box>
-  );
-};
-
 const TopDonations = () => {
   const [topDonors, setTopDonors] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fontSize = useBreakpointValue({ base: "md", md: "md" }); // bigger on mobile
+  const fontSize = useBreakpointValue({ base: "md", md: "md" });
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   useEffect(() => {
@@ -78,7 +44,12 @@ const TopDonations = () => {
 
   return (
     <Box w="100%" px={{ base: 2, md: 0 }}>
-      <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="bold" mb={2} textAlign="center">
+      <Text
+        fontSize={{ base: "lg", md: "xl" }}
+        fontWeight="bold"
+        mb={2}
+        textAlign="center"
+      >
         Top 5 Donors
       </Text>
 
@@ -93,7 +64,7 @@ const TopDonations = () => {
               borderRadius="md"
               bg="white"
             >
-              <Flex justify="space-between" align="center" gap={2}>
+              <Flex justify="space-between" align="center" gap={2} flexWrap="wrap">
                 <Box
                   px={2}
                   py={1}
@@ -101,11 +72,15 @@ const TopDonations = () => {
                   bg={rankColors[index] || "gray.100"}
                   flex="1"
                   minWidth={0}
-                  overflow="hidden"
                 >
-                  <ShrinkingName>
+                  <Text
+                    fontWeight="bold"
+                    fontSize="sm"
+                    whiteSpace="normal"
+                    wordBreak="break-word"
+                  >
                     {`${donor.donorLastName || ""} ${donor.donorFirstName || ""}`}
-                  </ShrinkingName>
+                  </Text>
                 </Box>
 
                 <Text
@@ -156,7 +131,7 @@ const TopDonations = () => {
               {topDonors.map((donor, index) => (
                 <Tr key={donor.id} bg={rankColors[index] || "transparent"}>
                   <Td fontSize={fontSize}>{index + 1}</Td>
-                  <Td fontSize={fontSize} maxW="250px" isTruncated>
+                  <Td fontSize={fontSize} maxW="250px" whiteSpace="normal" wordBreak="break-word">
                     {`${donor.donorLastName || ""} ${donor.donorFirstName || ""}`}
                   </Td>
                   <Td isNumeric fontSize={fontSize}>
