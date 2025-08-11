@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
   Spinner,
   Text,
-  useBreakpointValue,
   Stack,
   Flex,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { fetchTopDonations } from "../api/api";
 
@@ -29,8 +22,7 @@ const TopDonations = () => {
   const [topDonors, setTopDonors] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fontSize = useBreakpointValue({ base: "md", md: "md" });
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const fontSize = useBreakpointValue({ base: "sm", md: "md" });
 
   useEffect(() => {
     fetchTopDonations()
@@ -39,30 +31,47 @@ const TopDonations = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <Spinner />;
-  if (topDonors.length === 0) return <Text>No top donations yet.</Text>;
+  if (loading)
+    return (
+      <Box textAlign="center" py={6}>
+        <Spinner />
+      </Box>
+    );
+
+  if (topDonors.length === 0)
+    return (
+      <Text textAlign="center" py={4}>
+        No top donations yet.
+      </Text>
+    );
 
   return (
     <Box w="100%" px={{ base: 2, md: 0 }}>
       <Text
         fontSize={{ base: "lg", md: "xl" }}
         fontWeight="bold"
-        mb={2}
+        mb={3}
         textAlign="center"
       >
         Top 5 Donors
       </Text>
 
-      {isMobile ? (
-        // Mobile view
-        <Stack spacing={3}>
-          {topDonors.map((donor, index) => (
+      {/* Single responsive card layout for all screen sizes */}
+      <Stack spacing={3}>
+        {topDonors.map((donor, index) => {
+          const fullName = `${donor.donorLastName || ""} ${
+            donor.donorFirstName || ""
+          }`.trim();
+          const nameLength = fullName.length;
+
+          return (
             <Box
               key={donor.id}
               p={3}
               border="1px solid #eee"
               borderRadius="md"
               bg="white"
+              _hover={{ boxShadow: "md" }}
             >
               <Flex justify="space-between" align="center" gap={2} flexWrap="wrap">
                 <Box
@@ -75,11 +84,12 @@ const TopDonations = () => {
                 >
                   <Text
                     fontWeight="bold"
-                    fontSize="sm"
-                    whiteSpace="normal"
+                    fontSize={fontSize}
+                    isTruncated={nameLength < 35}
+                    whiteSpace={nameLength < 35 ? "nowrap" : "normal"}
                     wordBreak="break-word"
                   >
-                    {`${donor.donorLastName || ""} ${donor.donorFirstName || ""}`}
+                    {fullName}
                   </Text>
                 </Box>
 
@@ -94,55 +104,9 @@ const TopDonations = () => {
                 </Text>
               </Flex>
             </Box>
-          ))}
-        </Stack>
-      ) : (
-        // Desktop view
-        <TableContainer
-          maxH="300px"
-          overflowY="auto"
-          overflowX="auto"
-          border="1px solid #eee"
-          borderRadius="md"
-          w="100%"
-          sx={{
-            "::-webkit-scrollbar": { width: "4px", height: "4px" },
-            "::-webkit-scrollbar-thumb": {
-              background: "#ccc",
-              borderRadius: "4px",
-            },
-          }}
-        >
-          <Table variant="striped" size="md" colorScheme="orange" minW="500px">
-            <Thead bg="orange.500" position="sticky" top="0" zIndex={1}>
-              <Tr>
-                <Th color="white" fontSize={fontSize}>
-                  Rank
-                </Th>
-                <Th color="white" fontSize={fontSize}>
-                  Donor
-                </Th>
-                <Th color="white" fontSize={fontSize} isNumeric>
-                  Amount (₹)
-                </Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {topDonors.map((donor, index) => (
-                <Tr key={donor.id} bg={rankColors[index] || "transparent"}>
-                  <Td fontSize={fontSize}>{index + 1}</Td>
-                  <Td fontSize={fontSize} maxW="250px" whiteSpace="normal" wordBreak="break-word">
-                    {`${donor.donorLastName || ""} ${donor.donorFirstName || ""}`}
-                  </Td>
-                  <Td isNumeric fontSize={fontSize}>
-                    ₹ {donor.amount?.toLocaleString("en-IN")}
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
-      )}
+          );
+        })}
+      </Stack>
     </Box>
   );
 };
