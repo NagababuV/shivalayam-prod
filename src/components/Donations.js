@@ -141,7 +141,7 @@ export default function Donations() {
                   >
                     <Flex justify="space-between" fontSize="sm">
                       <Text fontWeight="bold">
-                        {`${d.donorFirstName || ""} ${d.donorLastName || ""}`}
+                        {`${d.donorLastName || ""} ${d.donorFirstName || ""}`}
                       </Text>
                       <Text color="orange.700" fontWeight="semibold">
                         ₹ {d.amount?.toLocaleString("en-IN")}

@@ -111,7 +111,7 @@ const TopDonations = () => {
                   overflow="hidden"
                 >
                   <ScrollingName>
-                    {`${donor.donorFirstName || ""} ${donor.donorLastName || ""}`}
+                    {`${donor.donorLastName || ""} ${donor.donorFirstName || ""}`}
                   </ScrollingName>
                 </Box>
 
