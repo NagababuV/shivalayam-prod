@@ -14,7 +14,6 @@ import {
   Stack,
   Flex,
 } from "@chakra-ui/react";
-import { keyframes } from "@emotion/react"; // ✅ correct import
 import { fetchTopDonations } from "../api/api";
 
 // Rank-based background colors (mobile view)
@@ -26,40 +25,33 @@ const rankColors = [
   "#87CEFA55", // 🌊 Light Blue for Rank 5
 ];
 
-// 🔹 Keyframes for left ↔ right smooth scrolling
-const marquee = keyframes`
-  0% { transform: translateX(0%); }
-  40% { transform: translateX(0%); }
-  50% { transform: translateX(-30%); }
-  90% { transform: translateX(-30%); }
-  100% { transform: translateX(0%); }
-`;
-
-const ScrollingName = ({ children }) => {
+// 🔹 Shrinks text ONLY if overflowing (used for mobile view)
+const ShrinkingName = ({ children, maxFont = 14, minFont = 10 }) => {
   const textRef = useRef(null);
   const containerRef = useRef(null);
-  const [isOverflow, setIsOverflow] = useState(false);
+  const [fontSize, setFontSize] = useState(maxFont);
 
   useEffect(() => {
     if (textRef.current && containerRef.current) {
-      const textWidth = textRef.current.scrollWidth;
-      const boxWidth = containerRef.current.offsetWidth;
-      setIsOverflow(textWidth > boxWidth); // ✅ only animate if overflowing
+      let currentFont = maxFont;
+      const containerWidth = containerRef.current.offsetWidth;
+      const measure = () => textRef.current.scrollWidth > containerWidth;
+
+      while (measure() && currentFont > minFont) {
+        currentFont -= 0.5;
+        textRef.current.style.fontSize = `${currentFont}px`;
+      }
+      setFontSize(currentFont);
     }
-  }, [children]);
+  }, [children, maxFont, minFont]);
 
   return (
-    <Box
-      ref={containerRef}
-      overflow="hidden"
-      whiteSpace="nowrap"
-    >
+    <Box ref={containerRef} overflow="hidden" whiteSpace="nowrap">
       <Text
         ref={textRef}
         fontWeight="bold"
-        fontSize="sm"
+        fontSize={`${fontSize}px`}
         display="inline-block"
-        animation={isOverflow ? `${marquee} 6s ease-in-out infinite` : "none"}
       >
         {children}
       </Text>
@@ -89,7 +81,9 @@ const TopDonations = () => {
       <Text fontSize="xl" fontWeight="bold" mb={2}>
         Top 5 Donors
       </Text>
+
       {isMobile ? (
+        // ---- Mobile: Card layout with shrinking text ----
         <Stack spacing={3}>
           {topDonors.map((donor, index) => (
             <Box
@@ -100,27 +94,25 @@ const TopDonations = () => {
               bg="white"
             >
               <Flex justify="space-between" align="center" gap={2}>
-                {/* Name box - takes remaining space */}
                 <Box
                   px={2}
                   py={1}
                   borderRadius="md"
                   bg={rankColors[index] || "gray.100"}
                   flex="1"
-                  minWidth={0} // ✅ Allows scrolling inside without pushing amount
+                  minWidth={0}
                   overflow="hidden"
                 >
-                  <ScrollingName>
+                  <ShrinkingName>
                     {`${donor.donorLastName || ""} ${donor.donorFirstName || ""}`}
-                  </ScrollingName>
+                  </ShrinkingName>
                 </Box>
 
-                {/* Amount box - fixed width */}
                 <Text
                   color="orange.700"
                   fontWeight="semibold"
                   fontSize="sm"
-                  flexShrink={0} // ✅ Prevent shrinking
+                  flexShrink={0}
                   whiteSpace="nowrap"
                 >
                   ₹ {donor.amount?.toLocaleString("en-IN")}
@@ -130,8 +122,7 @@ const TopDonations = () => {
           ))}
         </Stack>
       ) : (
-
-        // ---- Desktop/Tablet View: Table layout ----
+        // ---- Desktop/Tablet: Table layout without shrinking ----
         <TableContainer
           maxH="300px"
           overflowY="auto"
@@ -148,9 +139,15 @@ const TopDonations = () => {
           <Table variant="striped" size="sm" colorScheme="orange">
             <Thead bg="orange.500" position="sticky" top="0" zIndex={1}>
               <Tr>
-                <Th color="white" fontSize={fontSize}>Rank</Th>
-                <Th color="white" fontSize={fontSize}>Donor</Th>
-                <Th color="white" fontSize={fontSize} isNumeric>Amount (₹)</Th>
+                <Th color="white" fontSize={fontSize}>
+                  Rank
+                </Th>
+                <Th color="white" fontSize={fontSize}>
+                  Donor
+                </Th>
+                <Th color="white" fontSize={fontSize} isNumeric>
+                  Amount (₹)
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -160,7 +157,7 @@ const TopDonations = () => {
                   bg={rankColors[index] || "transparent"}
                 >
                   <Td fontSize={fontSize}>{index + 1}</Td>
-                  <Td fontSize={fontSize}>
+                  <Td fontSize={fontSize} maxW="250px" isTruncated>
                     {`${donor.donorLastName || ""} ${donor.donorFirstName || ""}`}
                   </Td>
                   <Td isNumeric fontSize={fontSize}>
