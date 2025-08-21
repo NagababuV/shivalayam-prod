@@ -329,7 +329,7 @@ export default function Donate() {
           <Button
             as="a"
             href={`https://wa.me/919493575676?text=${encodeURIComponent(
-              `Namaste, I (${donorFirstName} ${donorLastName}) have donated ₹${amount} on ${now}. Sharing the screenshot here.`
+              `Namaste, I ${donorFirstName} ${donorLastName} have donated ₹${amount} on ${now}. Sharing the screenshot here.`
             )}`}
             target="_blank"
             rel="noopener noreferrer"
